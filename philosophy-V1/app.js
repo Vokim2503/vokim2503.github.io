@@ -77,7 +77,6 @@ const quotesDB = {
 
 // 2. 화면에 있는 요소들(HTML)을 자바스크립트로 가져옵니다.
 const worrySelect = document.getElementById('worry-select');
-const spinBtn = document.getElementById('spin-btn');
 const loadingSpinner = document.getElementById('loading-spinner');
 const resultArea = document.getElementById('result-area');
 
@@ -86,28 +85,18 @@ const quoteTextEl = document.getElementById('quote-text');
 const quoteInterpretationEl = document.getElementById('quote-interpretation');
 const youtubeLinkEl = document.getElementById('youtube-link'); // 유튜브 버튼 가져오기
 
-// 3. 사용자가 '고민'을 선택했을 때 버튼을 활성화하는 마법
+// 3. 궁극의 1버튼 통합 마법: 사용자가 메뉴를 '선택하는 즉시' 룰렛이 돌아가게 합니다!
 worrySelect.addEventListener('change', function() {
-    // 만약 '-- 고민을 선택해주세요 --' 가 아닌 다른 진짜 고민을 골랐다면?
-    if (this.value !== 'none') {
-        spinBtn.innerText = "철학자의 조언 구하기 🔮"; // 글씨도 바꿉니다.
-        spinBtn.disabled = false; // 버튼 활성화
-    } else {
-        spinBtn.innerText = "철학자의 조언 구하기";
-        spinBtn.disabled = true; // 버튼 비활성화
-    }
-});
-
-// 4. 룰렛 버튼 클릭 이벤트 처리
-spinBtn.addEventListener('click', () => {
-    let category = worrySelect.value;
+    let category = this.value;
     let originalCategory = category; // 랜덤 검색어 키워드를 위해 원본 카테고리 보존
     
-    // 아무것도 선택하지 않았을 때
-    if (category === "none") {
-        alert("위의 메뉴에서 지금 안고 계신 고민을 먼저 선택해주세요! 😊");
-        return;
-    }
+    // 혹시라도 '선택 안함'을 눌렀다면 무시
+    if (category === "none") return;
+    
+    // 1) 메뉴 박스(버튼)를 잠시 숨기고 스피너(로딩)를 짠! 띄웁니다.
+    this.classList.add('hidden');
+    resultArea.classList.add('hidden');
+    loadingSpinner.classList.remove('hidden');
 
     // 확장된 구체적인 고민들을 기존의 4가지 카테고리로 자연스럽게 연결해줍니다.
     const categoryMap = {
@@ -127,7 +116,6 @@ spinBtn.addEventListener('click', () => {
     // 1) 결과창을 다시 숨기고 스피너(로딩 애니메이션)를 보여줍니다.
     resultArea.classList.add('hidden');
     loadingSpinner.classList.remove('hidden');
-    spinBtn.disabled = true; // 돌아가는 동안 중복 클릭을 막습니다.
     
     // 2) 2초(2000밀리초) 동안 신비롭게 고민하는 척을 합니다.
     setTimeout(() => {
@@ -200,7 +188,10 @@ spinBtn.addEventListener('click', () => {
         // 4) 로딩을 끝내고 결과창을 화려하게 보여줍니다!
         loadingSpinner.classList.add('hidden');
         resultArea.classList.remove('hidden');
-        spinBtn.disabled = false; // 다시 누를 수 있게 버튼 잠금 해제
+        
+        // ★ 핵심: 다음번에도 또 조언을 구할 수 있도록 드롭다운 메뉴(버튼)를 다시 살려줍니다!
+        worrySelect.classList.remove('hidden');
+        worrySelect.value = 'none'; // 선택 상태를 '👇 고민 털어놓기' 초기 상태로 되돌림
         
     }, 2000); // 2초 뒤에 이 안의 코드가 실행됨
 });
@@ -244,7 +235,7 @@ const philosopherGalleryData = {
 };
 
 // 갤러리 카드(위쪽 철학자 사진들)를 클릭했을 때의 동작
-document.querySelectorAll('.gallery-card').forEach(card => {
+document.querySelectorAll('.gallery-card-3d').forEach(card => {
     card.addEventListener('click', function(e) {
         e.preventDefault(); // 기본 링크 이동 방지
         
@@ -278,13 +269,27 @@ function showPhilosopherModal(name, quote, advice) {
     modalQuote.innerText = `"${quote}"`;
     modalAdvice.innerText = `💡 행복칠TV 해석: ${advice}`;
     
-    // 모달 내부의 유튜브 버튼 설정 (큰따옴표 완전 일치 검색으로 강제)
-    const searchKeyword = `"행복칠TV" "${name}"`;
-    const autoSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchKeyword)}`;
+    // ★ 수정됨: 유튜브 '검색'으로 넘어가면 타 채널 영상이 섞여 나오므로, 
+    // 검색 대신 룰렛처럼 대표님의 영상 풀(vokimMasterVideos)에서 랜덤으로 하나를 골라 내부 모달로 바로 띄워줍니다!
     const modalYoutubeLink = document.getElementById('modal-youtube-link');
     if(modalYoutubeLink) {
-        modalYoutubeLink.href = autoSearchUrl;
-        modalYoutubeLink.innerText = `📺 행복칠TV에서 '${name}' 영상 찾기`;
+        modalYoutubeLink.href = "#";
+        modalYoutubeLink.innerText = `📺 이 철학자와 관련된 행복칠TV 영상 보기`;
+        
+        modalYoutubeLink.onclick = function(e) {
+            e.preventDefault();
+            // 기본 비상용 영상
+            let finalVideoUrl = "https://youtu.be/at9kev-k_YY"; 
+            
+            // videos.js 의 1,112개 과거 영상 데이터가 있다면 거기서 랜덤 추출
+            if (typeof historicalVideos !== 'undefined' && historicalVideos.length > 0) {
+                finalVideoUrl = historicalVideos[Math.floor(Math.random() * historicalVideos.length)];
+            }
+            
+            // 모달을 닫고, 바로 영상을 띄움
+            modalOverlay.classList.add('hidden');
+            openVideoModal(finalVideoUrl);
+        };
     }
     
     modalOverlay.classList.remove('hidden');

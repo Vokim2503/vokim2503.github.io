@@ -135,7 +135,7 @@
         </section>
 
         <!-- 하단 법적 고지 (애드센스 승인 필수 요소) -->
-        <footer style="text-align: center; margin-top: 2rem; padding-bottom: 2rem; font-size: 0.8rem; color: #666;">
+        <footer style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding-bottom: 1rem; font-size: 0.8rem; color: #666; z-index: 10;">
             <a href="#" id="btn-privacy" style="color: #888; text-decoration: underline;">개인정보처리방침</a> | 
             <span>© 2026 로또 생성기. All rights reserved.</span>
         </footer>
@@ -172,5 +172,17 @@
         });
       }
     </script>
+    
+    <!-- 철학 앱 크로스 마케팅 플로팅 버튼 -->
+    <!-- 로컬 작업 폴더 구조에 맞게 한 단계 위(../)로 올라가서 philosophy-V1 폴더를 찾도록 경로 수정 -->
+    <a href="../philosophy-V1/index.html" class="floating-promo-btn" target="_blank">
+        <div class="promo-icon" style="margin-right: 12px; display: flex; align-items: center;">
+            <img src="../philosophy-V1/images/plato.jpg" alt="철학자" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-glow); box-shadow: 0 0 10px rgba(0,255,204,0.5);">
+        </div>
+        <div class="promo-text">
+            <span>인생의 길을 밝혀줄 지혜</span>
+            <strong>위대한 철학자 만나기</strong>
+        </div>
+    </a>
 </body>
 </html>

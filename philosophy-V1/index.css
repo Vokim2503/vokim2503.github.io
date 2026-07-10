@@ -388,88 +388,92 @@ select option {
 }
 
 /* =========================================
-   철학자 갤러리 (메인 카드 내부 삽입 & 자동 스크롤) 
+   철학자 3D 입체 갤러리 (회전목마 스타일) 
    ========================================= */
-.philosopher-gallery {
-    display: block;
-    overflow: hidden;
+.philosopher-gallery-3d {
     width: 100%;
-    padding: 5px 0 10px 0; /* 상하 패딩 축소 */
-    margin-bottom: 10px; /* 하단 마진 축소 */
-    position: relative;
-    /* 카드들의 양쪽 끝이 자연스럽게 사라지도록 그라데이션 마스크 효과 적용 */
-    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-}
-
-.gallery-track {
+    height: 300px; /* 반경이 훨씬 커졌으므로 잘림을 방지하기 위해 캔버스 세로폭을 대폭 확장 */
+    margin-top: -70px; /* 더 커진 캔버스를 상단 남는 공간으로 바짝 밀어 올림 */
+    perspective: 800px; /* 3D 원근감 렌즈 */
     display: flex;
-    gap: 15px; /* 사진 사이 간격 살짝 축소 */
-    width: max-content;
-    -webkit-animation: scroll-gallery 25s linear infinite;
-    animation: scroll-gallery 25s linear infinite;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    /* 앞뒤 원근감을 더 자연스럽게 보여주기 위해 양끝 마스크 적용 (선택사항) */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
 
-.gallery-track:hover {
-    -webkit-animation-play-state: paused;
+.gallery-carousel-3d {
+    width: 0px; /* 정중앙 기준점 */
+    height: 120px; /* 세로 길이 축소 */
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spin-gallery 120s infinite linear; /* 사진이 24장으로 늘어났으므로 120초로 더 우아하게 천천히 */
+}
+
+/* 마우스 올리면 회전 멈춤! */
+.gallery-carousel-3d:hover {
     animation-play-state: paused;
 }
 
-.gallery-card {
-    flex: 0 0 auto;
-    width: 90px;
+@keyframes spin-gallery {
+    /* 타원형 궤도를 위해 회전 반경(translateZ)을 더더욱 넓혔습니다(-342px) */
+    0% { transform: translateZ(-342px) rotateX(-15deg) rotateY(0deg); }
+    100% { transform: translateZ(-342px) rotateX(-15deg) rotateY(360deg); }
+}
+
+.gallery-card-3d {
+    position: absolute;
+    width: 90px; /* 카드가 24장으로 늘어났으므로 원주율에 맞춰 너비를 다시 줄임 */
+    height: 110px; /* 너비에 맞게 세로 길이도 예쁜 비율로 줄임 */
+    left: -45px; /* 폭의 절반(-45px)으로 이동하여 정중앙 맞춤 */
+    top: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end; /* 이름을 맨 아래로 */
     text-decoration: none;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 8px 8px;
-    transition: transform 0.3s ease, background 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #000;
+    padding: 0; /* 테두리 여백 제거 (간격 없애기) */
+    border: none;
+    /* 뒷면이 보이게 할지 말지 결정. 보이게 하면 원을 돌아갈 때 뒷모습(좌우반전)이 보입니다! */
+    backface-visibility: visible; 
+    transition: box-shadow 0.3s ease, filter 0.3s ease;
 }
 
-.gallery-card:hover {
-    transform: translateY(-5px);
-    background: rgba(46, 139, 87, 0.15); /* 에메랄드 녹색 은은한 호버 효과 */
-    border-color: rgba(46, 139, 87, 0.5);
+/* 3D 요소는 transform(이동)을 쓰면 좌표가 꼬이므로, 그림자만 빛나게 합니다 */
+.gallery-card-3d:hover {
+    box-shadow: inset 0 0 40px rgba(46, 139, 87, 0.8); /* 안쪽으로 빛이 뿜어져 나오는 효과 */
+    z-index: 10;
 }
 
-.gallery-card img {
-    width: 70px;
-    height: 90px;
+.gallery-card-3d img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* 여백 없이 꽉 채웁니다 */
+    height: 100%; /* 여백 없이 꽉 채웁니다 */
     object-fit: cover;
-    border-radius: 8px; /* 원이 아닌 약간 둥근 사각형 */
-    margin-bottom: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    border-radius: 4px; /* 살짝 둥글게 복구 (아까 모양으로) */
     filter: sepia(0.2) contrast(1.1); /* 옛날 초상화 느낌 유지 */
+    z-index: 1;
 }
 
-.name-ko {
-    font-size: 0.95rem;
+/* 이름 칸의 크기를 극단적으로 줄이고 텍스트 배경을 제거합니다 */
+.gallery-card-3d .name-ko {
+    position: relative;
+    z-index: 2;
+    font-size: 0.7rem; /* 글자 크기 더 축소 */
     font-weight: 700;
-    color: #e8cbc0;
-    margin-bottom: 4px;
+    color: #fff;
+    background: transparent; /* 뒷배경 제거 */
+    padding: 0;
+    margin-bottom: 6px; /* 아래쪽 여백 조금 축소 */
     text-align: center;
-}
-
-.name-en {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    text-align: center;
-    font-style: italic;
-}
-
-@-webkit-keyframes scroll-gallery {
-    /* 이미지는 왼쪽에서 오른쪽으로 흐름 */
-    0% { -webkit-transform: translateX(calc(-50% - 7.5px)); transform: translateX(calc(-50% - 7.5px)); }
-    100% { -webkit-transform: translateX(0); transform: translateX(0); }
-}
-
-@keyframes scroll-gallery {
-    /* 이미지는 왼쪽에서 오른쪽으로 흐름 */
-    0% { transform: translateX(calc(-50% - 7.5px)); }
-    100% { transform: translateX(0); }
+    line-height: 1;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 5px rgba(0,0,0,0.8); /* 배경이 없어도 글씨가 또렷하게 보이도록 그림자 강화 */
 }
 
 @-webkit-keyframes sweep-scroll {

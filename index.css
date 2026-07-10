@@ -309,3 +309,77 @@ body {
 @keyframes fadeInTerm {
     to { opacity: 1; }
 }
+
+/* =========================================
+   철학 상담소 크로스 프로모션 플로팅 버튼
+   ========================================= */
+.floating-promo-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #1e1e30, #2a2a40);
+    border: 1px solid var(--primary-glow);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 255, 204, 0.4);
+    z-index: 9999;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: bouncePromo 2s infinite;
+}
+
+.floating-promo-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 20px var(--primary-glow);
+    animation: none; /* 마우스 오버시 애니메이션 멈춤 */
+}
+
+.promo-icon {
+    font-size: 1.8rem;
+    margin-right: 12px;
+}
+
+.promo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.promo-text span {
+    font-size: 0.75rem;
+    color: #a4f522; /* 철학 앱의 포인트 컬러 사용 */
+    margin-bottom: 2px;
+}
+
+.promo-text strong {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+@keyframes bouncePromo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 600px) {
+    .floating-promo-btn {
+        bottom: 15px;
+        left: 15px;
+        right: 15px; /* 좌우 여백을 동일하게 주어 모바일 화면 하단에 꽉 차게 만듦 */
+        padding: 10px 15px;
+        justify-content: center; /* 내용 중앙 정렬 */
+    }
+    .promo-icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+    .promo-text span {
+        font-size: 0.7rem;
+    }
+    .promo-text strong {
+        font-size: 0.9rem;
+    }
+}
