@@ -68,7 +68,6 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.8s ease-in-out;
-    overflow-y: auto; /* 내용 초과 시 스크롤 생성 */
 }
 .stage.active {
     opacity: 1; pointer-events: auto;
@@ -384,82 +383,3 @@ body {
         font-size: 0.9rem;
     }
 }
-
-/* =========================================
-   SEO (애드센스 승인용) 정보성 텍스트 영역
-   ========================================= */
-.seo-encyclopedia {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto 3rem auto;
-    padding: 0 1rem;
-    z-index: 10;
-    position: relative;
-}
-
-.seo-accordion {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 10px;
-    color: var(--text-muted);
-}
-
-.seo-accordion summary {
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    list-style: none; /* 기본 화살표 제거 */
-    outline: none;
-    text-align: center;
-    padding: 5px;
-    transition: color 0.3s;
-}
-
-.seo-accordion summary::-webkit-details-marker {
-    display: none; /* 크롬/사파리 기본 화살표 제거 */
-}
-
-.seo-accordion summary:hover {
-    color: var(--text-main);
-}
-
-.seo-content {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.1);
-    font-size: 0.8rem;
-    line-height: 1.6;
-    text-align: left;
-    height: 250px;
-    overflow-y: auto; /* 내용이 기므로 내부 스크롤 적용 */
-    padding-right: 10px;
-}
-
-.seo-content::-webkit-scrollbar {
-    width: 6px;
-}
-.seo-content::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-}
-.seo-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-
-.seo-content h3 {
-    font-size: 0.9rem;
-    color: var(--primary-glow);
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.seo-content h3:first-child {
-    margin-top: 0;
-}
-
-.seo-content p {
-    margin-bottom: 1rem;
-}
-
