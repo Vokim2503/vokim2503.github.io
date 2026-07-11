@@ -497,17 +497,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    async function createQrScanVariants(file) {
+        const variants = [file];
+        if (typeof createImageBitmap !== 'function') return variants;
+
+        try {
+            const bitmap = await createImageBitmap(file);
+            const crops = [
+                { x: 0, y: 0, w: 1, h: 1 },
+                { x: 0.1, y: 0.1, w: 0.8, h: 0.8 },
+                { x: 0.2, y: 0.2, w: 0.6, h: 0.6 },
+                { x: 0, y: 0, w: 0.7, h: 0.7 },
+                { x: 0.3, y: 0, w: 0.7, h: 0.7 },
+                { x: 0, y: 0.3, w: 0.7, h: 0.7 },
+                { x: 0.3, y: 0.3, w: 0.7, h: 0.7 }
+            ];
+
+            for (let index = 0; index < crops.length; index++) {
+                const crop = crops[index];
+                const sx = Math.round(bitmap.width * crop.x);
+                const sy = Math.round(bitmap.height * crop.y);
+                const sw = Math.round(bitmap.width * crop.w);
+                const sh = Math.round(bitmap.height * crop.h);
+                const scale = Math.min(1, 1400 / Math.max(sw, sh));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(sw * scale));
+                canvas.height = Math.max(1, Math.round(sh * scale));
+                const context = canvas.getContext('2d', { willReadFrequently: true });
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
+                context.drawImage(bitmap, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                if (blob) variants.push(new File([blob], `qr-area-${index}.jpg`, { type: 'image/jpeg' }));
+            }
+            bitmap.close?.();
+        } catch (error) {
+            console.log('QR 사진 보정 생략', error);
+        }
+        return variants;
+    }
+
     async function scanQrImageFile(file, inputElement) {
         if (!file) return;
         await stopQrScanner();
         if (!prepareQrScanner()) return;
         qrReader.style.display = 'block';
-        setQrStatus('사진에서 QR을 찾는 중입니다…');
+        setQrStatus('사진을 보정하고 QR을 찾는 중입니다…');
         try {
-            const decodedText = await qrScanner.scanFile(file, true);
+            const variants = await createQrScanVariants(file);
+            let decodedText = '';
+            for (let index = 0; index < variants.length; index++) {
+                setQrStatus(`QR 판독 중입니다… (${index + 1}/${variants.length})`);
+                try {
+                    decodedText = await qrScanner.scanFile(variants[index], index === 0);
+                    if (decodedText) break;
+                } catch (error) {}
+            }
+            if (!decodedText) throw new Error('QR not found');
             await handleDecodedQr(decodedText);
         } catch (error) {
-            setQrStatus('사진에서 QR을 찾지 못했습니다. QR 부분이 크게 보이도록 다시 촬영해 주세요.', true);
+            setQrStatus('QR을 찾지 못했습니다. 복권 전체가 아니라 정사각형 QR이 화면의 절반 이상 보이도록 가까이 촬영해 주세요.', true);
             await stopQrScanner();
         } finally {
             inputElement.value = '';
