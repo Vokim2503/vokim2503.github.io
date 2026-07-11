@@ -210,8 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const vx = (Math.random() - 0.5) * 2.5;
             const vy = (Math.random() - 0.5) * 2.5;
 
-            orb.style.left = `${x}px`;
-            orb.style.top = `${y}px`;
+            // 이동은 transform 하나로만 처리해 시작 좌표가 두 번 적용되지 않게 한다.
+            orb.style.left = '0';
+            orb.style.top = '0';
+            orb.style.transform = `translate(${x}px, ${y}px)`;
             orbField.appendChild(orb);
             
             const orbData = { el: orb, num: num, x: x, y: y, vx: vx, vy: vy };
