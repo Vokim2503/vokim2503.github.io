@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v14'; // QR 판독 도구 로딩 수정
+const CACHE_NAME = 'lotto-cache-v15'; // QR 카메라와 사진 확인 안정화
 const urlsToCache = [
   './',
   './index.html',
