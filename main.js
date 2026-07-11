@@ -376,6 +376,71 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Math.abs(distance) > 50) updateNumberPage(currentNumberPage + (distance < 0 ? 1 : -1));
     }, { passive: true });
 
+
+    // --- 동행복권 공식 QR 확인 ---
+    const btnOpenQr = document.getElementById('btn-open-qr');
+    const btnCloseQr = document.getElementById('btn-close-qr');
+    const qrModal = document.getElementById('qr-modal');
+    const qrStatus = document.getElementById('qr-status');
+    const btnOpenQrResult = document.getElementById('btn-open-qr-result');
+    let qrScanner = null;
+    let verifiedQrUrl = '';
+
+    function isOfficialLottoQr(text) {
+        try {
+            const url = new URL(text);
+            const allowedHosts = ['qr.dhlottery.co.kr', 'www.dhlottery.co.kr', 'm.dhlottery.co.kr', 'dhlottery.co.kr'];
+            return url.protocol === 'https:' && allowedHosts.includes(url.hostname) ? url.href : '';
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function closeQrScanner() {
+        qrModal.style.display = 'none';
+        if (qrScanner) {
+            qrScanner.clear().catch(() => {});
+            qrScanner = null;
+        }
+    }
+
+    btnOpenQr?.addEventListener('click', () => {
+        qrModal.style.display = 'flex';
+        qrStatus.textContent = '';
+        btnOpenQrResult.style.display = 'none';
+        verifiedQrUrl = '';
+
+        if (typeof Html5QrcodeScanner === 'undefined') {
+            qrStatus.textContent = 'QR 판독 도구를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.';
+            return;
+        }
+
+        qrScanner = new Html5QrcodeScanner('qr-reader', {
+            fps: 10,
+            qrbox: { width: 250, height: 140 },
+            rememberLastUsedCamera: true,
+            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE]
+        }, false);
+
+        qrScanner.render(decodedText => {
+            const officialUrl = isOfficialLottoQr(decodedText);
+            if (!officialUrl) {
+                qrStatus.textContent = '동행복권 공식 QR 코드만 확인할 수 있습니다.';
+                return;
+            }
+            verifiedQrUrl = officialUrl;
+            qrStatus.textContent = '동행복권 공식 QR을 확인했습니다.';
+            btnOpenQrResult.style.display = 'block';
+            qrScanner.clear().catch(() => {});
+            qrScanner = null;
+        }, () => {});
+    });
+
+    btnCloseQr?.addEventListener('click', closeQrScanner);
+    btnOpenQrResult?.addEventListener('click', () => {
+        if (verifiedQrUrl) window.open(verifiedQrUrl, '_blank', 'noopener,noreferrer');
+    });
+
     let lastClickTime = 0;
     function handleOrbClick(orbData) {
         if (selectedNumbers.length >= 6) return;
