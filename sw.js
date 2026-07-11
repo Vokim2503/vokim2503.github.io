@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v17'; // 아이폰 기본 카메라 촬영 QR 확인
+const CACHE_NAME = 'lotto-cache-v18'; // 아이폰 촬영 사진 다중 영역 QR 판독
 const urlsToCache = [
   './',
   './index.html',
