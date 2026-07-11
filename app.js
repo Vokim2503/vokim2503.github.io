@@ -53,17 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartCalc = document.getElementById('btn-start-calc');
     if(btnStartCalc) {
         btnStartCalc.addEventListener('click', () => {
-            // 뉴스 및 구분선을 서서히 위로 접어 올리며 터미널 창을 끌어올림
-            const actionContainer = document.getElementById('calc-action-container');
-            const trendContainer = document.querySelector('.trend-container');
-            const divider = document.querySelector('.divider');
-            
-            if (actionContainer) actionContainer.classList.add('smooth-hide');
-            if (trendContainer) trendContainer.classList.add('smooth-hide');
-            if (divider) divider.classList.add('smooth-hide');
+            // 버튼을 비활성화하여 중복 클릭 방지
+            btnStartCalc.disabled = true;
+            btnStartCalc.textContent = "연산 중...";
+            btnStartCalc.style.opacity = "0.5";
 
-            // 통합 터미널 열기
-            document.getElementById('integrated-terminal').style.display = 'block';
+            // 통합 터미널 열기 (숨기던 코드 전부 삭제, 화면에 요소를 그대로 둠)
+            const terminal = document.getElementById('integrated-terminal');
+            terminal.style.display = 'block';
+
+            // 브라우저 기본 부드러운 스크롤을 이용해 터미널 영역으로 부드럽게 이동
+            // (화면 떨림 현상 완벽 차단)
+            setTimeout(() => {
+                terminal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
             
             runTerminalAnimation();
         });
