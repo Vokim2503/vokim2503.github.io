@@ -200,16 +200,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const candidateNumbers = allNumbers.slice(0, 15);
 
         const fieldRect = orbField.getBoundingClientRect();
+        const useStaticTouchLayout = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
         
-        candidateNumbers.forEach((num) => {
+        candidateNumbers.forEach((num, index) => {
             const orb = document.createElement('div');
             orb.classList.add('candidate-orb');
             orb.textContent = num; 
             
-            const x = Math.random() * (fieldRect.width - 50);
-            const y = Math.random() * (fieldRect.height - 50);
-            const vx = (Math.random() - 0.5) * 2.5;
-            const vy = (Math.random() - 0.5) * 2.5;
+            const columns = 3;
+            const rows = 5;
+            const x = useStaticTouchLayout
+                ? ((index % columns) + 0.5) * (fieldRect.width / columns) - 25
+                : Math.random() * (fieldRect.width - 50);
+            const y = useStaticTouchLayout
+                ? (Math.floor(index / columns) + 0.5) * (fieldRect.height / rows) - 25
+                : Math.random() * (fieldRect.height - 50);
+            const vx = useStaticTouchLayout ? 0 : (Math.random() - 0.5) * 2.5;
+            const vy = useStaticTouchLayout ? 0 : (Math.random() - 0.5) * 2.5;
 
             // 이동은 transform 하나로만 처리해 시작 좌표가 두 번 적용되지 않게 한다.
             orb.style.left = '0';
@@ -220,10 +227,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const orbData = { el: orb, num: num, x: x, y: y, vx: vx, vy: vy };
             orbs.push(orbData);
 
+            // iOS는 움직이는 요소에서 touchend/click이 취소될 수 있으므로
+            // 손가락이 닿는 순간 선택하고 click은 키보드/구형 브라우저 보조로 둔다.
+            orb.addEventListener('pointerdown', (event) => {
+                event.preventDefault();
+                handleOrbClick(orbData);
+            });
             orb.addEventListener('click', () => handleOrbClick(orbData));
         });
 
-        startPhysics();
+        if (!useStaticTouchLayout) startPhysics();
     }
 
     function startPhysics() {
