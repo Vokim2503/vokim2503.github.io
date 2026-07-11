@@ -176,9 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageIndicator = document.getElementById('number-page-indicator');
     const btnPagePrev = document.getElementById('btn-page-prev');
     const btnPageNext = document.getElementById('btn-page-next');
+    const btnModeManual = document.getElementById('btn-mode-manual');
+    const btnModeAuto = document.getElementById('btn-mode-auto');
+    const manualPanel = document.getElementById('manual-selection-panel');
+    const autoPanel = document.getElementById('auto-selection-panel');
+    const btnViewBlind = document.getElementById('btn-view-blind');
+    const btnViewNumber = document.getElementById('btn-view-number');
+    const autoGamesEl = document.getElementById('auto-games');
+    const btnAutoRegenerate = document.getElementById('btn-auto-regenerate');
+    const btnAutoCopy = document.getElementById('btn-auto-copy');
     let selectedNumbers = [];
     let orbs = [];
     let currentNumberPage = 0;
+    let autoGenerationCount = 0;
+    let currentAutoGames = [];
 
     function customRandom(seed) {
         let x = Math.sin(seed++) * 10000;
@@ -189,6 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
         orbField.innerHTML = '';
         selectedNumbers = [];
         currentNumberPage = 0;
+        autoGenerationCount = 0;
+        currentAutoGames = [];
+        setSelectionMode('manual');
+        setManualView('blind');
         document.querySelectorAll('.slot').forEach(s => {
             s.classList.remove('filled'); s.textContent = '';
         });
@@ -242,6 +257,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnPagePrev) btnPagePrev.addEventListener('click', () => updateNumberPage(currentNumberPage - 1));
     if (btnPageNext) btnPageNext.addEventListener('click', () => updateNumberPage(currentNumberPage + 1));
+
+    function setSelectionMode(mode) {
+        const isManual = mode === 'manual';
+        btnModeManual?.classList.toggle('active', isManual);
+        btnModeAuto?.classList.toggle('active', !isManual);
+        manualPanel?.classList.toggle('active', isManual);
+        autoPanel?.classList.toggle('active', !isManual);
+        if (!isManual && currentAutoGames.length === 0) generateAutoGames();
+    }
+
+    function setManualView(view) {
+        const isBlind = view === 'blind';
+        orbField.classList.toggle('blind-view', isBlind);
+        btnViewBlind?.classList.toggle('active', isBlind);
+        btnViewNumber?.classList.toggle('active', !isBlind);
+    }
+
+    function generateAutoGames() {
+        const baseSeed = Number(userSeedData[0] || Date.now()) % 1000000000;
+        currentAutoGames = [];
+
+        for (let gameIndex = 0; gameIndex < 5; gameIndex++) {
+            const numbers = Array.from({ length: 45 }, (_, i) => i + 1);
+            let gameSeed = baseSeed + (autoGenerationCount * 100003) + (gameIndex * 997);
+            for (let i = numbers.length - 1; i > 0; i--) {
+                const j = Math.floor(customRandom(gameSeed++) * (i + 1));
+                [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+            }
+            currentAutoGames.push(numbers.slice(0, 6).sort((a, b) => a - b));
+        }
+
+        autoGenerationCount += 1;
+        renderAutoGames();
+    }
+
+    function renderAutoGames() {
+        if (!autoGamesEl) return;
+        autoGamesEl.innerHTML = '';
+        currentAutoGames.forEach((game, gameIndex) => {
+            const row = document.createElement('div');
+            row.className = 'auto-game-row';
+            const label = document.createElement('span');
+            label.className = 'auto-game-label';
+            label.textContent = `${gameIndex + 1}게임`;
+            row.appendChild(label);
+
+            const balls = document.createElement('div');
+            balls.className = 'auto-game-balls';
+            game.forEach(num => {
+                const ball = document.createElement('span');
+                ball.className = 'auto-ball';
+                ball.textContent = num;
+                if (num <= 10) ball.classList.add('yellow');
+                else if (num <= 20) ball.classList.add('blue');
+                else if (num <= 30) ball.classList.add('red');
+                else if (num <= 40) ball.classList.add('gray');
+                else ball.classList.add('green');
+                balls.appendChild(ball);
+            });
+            row.appendChild(balls);
+            autoGamesEl.appendChild(row);
+        });
+    }
+
+    btnModeManual?.addEventListener('click', () => setSelectionMode('manual'));
+    btnModeAuto?.addEventListener('click', () => setSelectionMode('auto'));
+    btnViewBlind?.addEventListener('click', () => setManualView('blind'));
+    btnViewNumber?.addEventListener('click', () => setManualView('number'));
+    btnAutoRegenerate?.addEventListener('click', generateAutoGames);
+    btnAutoCopy?.addEventListener('click', () => {
+        const text = currentAutoGames.map((game, index) => `${index + 1}게임: ${game.join(', ')}`).join('\n');
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btnAutoCopy.textContent;
+            btnAutoCopy.textContent = '복사 완료!';
+            setTimeout(() => { btnAutoCopy.textContent = originalText; }, 2000);
+        });
+    });
 
     let swipeStartX = 0;
     orbField.addEventListener('touchstart', event => {
