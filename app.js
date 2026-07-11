@@ -65,7 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // 브라우저 기본 부드러운 스크롤을 이용해 터미널 영역으로 부드럽게 이동
             // (화면 떨림 현상 완벽 차단)
             setTimeout(() => {
-                terminal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const y = terminal.getBoundingClientRect().top + window.scrollY - 20;
+                window.scrollTo({ top: y, behavior: 'smooth' });
             }, 100);
             
             runTerminalAnimation();
@@ -85,14 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 자동 스크롤 함수 (표준 문서 레이아웃으로 변경되었으므로 전체 문서 스크롤 적용)
         function scrollToBottom() {
-            const terminal = document.getElementById('integrated-terminal');
-            const actionBtn = document.getElementById('stage1-action');
-            
-            if (actionBtn && actionBtn.style.display === 'block') {
-                actionBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            } else if (terminal) {
-                terminal.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            }
+            // scrollIntoView가 유발하는 아이폰 덜덜 떨림 현상을 차단하기 위해
+            // 브라우저의 절대 좌표 기반 스크롤 방식을 사용합니다.
+            window.scrollTo({ 
+                top: document.body.scrollHeight, 
+                behavior: 'smooth' 
+            });
         }
 
         // Reset (미리 공간을 차지하게 하고 투명도만 조절하여 화면 높이 떨림 현상 완벽 방지)
