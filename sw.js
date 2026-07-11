@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v13'; // QR 당첨확인 기능 강제 업데이트
+const CACHE_NAME = 'lotto-cache-v14'; // QR 판독 도구 로딩 수정
 const urlsToCache = [
   './',
   './index.html',
