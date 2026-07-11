@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v21'; // 아이폰 첫 화면과 외부 뉴스 로딩 안정화
+const CACHE_NAME = 'lotto-cache-v22'; // 애드센스 심사용 안정판
 const urlsToCache = [
   './',
   './index.html',

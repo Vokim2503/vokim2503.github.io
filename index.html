@@ -93,7 +93,8 @@
             </section>
 
 
-            <section class="qr-check-card" aria-label="복권 QR 당첨 확인">
+            <!-- 애드센스 심사 중에는 아이폰 판독이 불안정한 QR 시험 기능을 공개하지 않음. 개발 코드는 보존. -->
+            <section class="qr-check-card" aria-label="복권 QR 당첨 확인" hidden>
                 <div><span class="latest-badge">실물 복권 확인</span><h2>QR 코드로 당첨 확인</h2><p>카메라 또는 저장된 사진으로 복권 QR을 읽고 동행복권 공식 결과를 확인합니다.</p></div>
                 <button id="btn-open-qr" class="btn primary" type="button">QR 당첨 확인</button>
             </section>
@@ -209,7 +210,7 @@
         </footer>
 
 
-        <div id="qr-modal" class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+        <div id="qr-modal" class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title" hidden>
             <div class="qr-modal-content">
                 <h2 id="qr-modal-title">QR 당첨 확인</h2>
                 <p class="qr-permission-guide">아래에서 카메라 또는 사진을 선택하세요. QR 영상과 사진은 이 사이트의 서버에 저장하거나 전송하지 않으며 브라우저 안에서만 판독합니다.</p>
@@ -237,8 +238,6 @@
                 <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">Google과 파트너는 사용자의 본 사이트 또는 다른 웹사이트 방문 기록을 바탕으로 광고를 제공할 수 있습니다. 사용자는 <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 광고 설정</a>에서 맞춤 광고를 관리하거나 사용 중지할 수 있으며, 브라우저 설정에서 쿠키를 삭제하거나 차단할 수 있습니다.</p>
                 <h3 style="color:#fff; margin:16px 0 8px;">외부 링크</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">뉴스, YouTube, GitHub 등 외부 사이트에는 해당 사업자의 개인정보처리방침이 적용됩니다. 자세한 내용은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 개인정보처리방침</a>을 확인해 주세요.</p>
-                <h3 style="color:#fff; margin:16px 0 8px;">QR 카메라 및 사진</h3>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">QR 당첨 확인 기능은 사용자가 직접 선택한 경우에만 카메라 또는 사진 접근 권한을 요청합니다. 촬영 영상과 선택한 사진은 본 사이트의 서버에 저장하거나 전송하지 않고 브라우저 안에서 QR 판독에만 사용합니다.</p>
                 <p style="font-size: 0.8rem; color:#888; margin-top:15px;">최종 업데이트: 2026년 7월 11일</p>
                 <button id="btn-close-privacy" class="btn primary" style="width: 100%; margin-top: 20px;">닫기</button>
             </div>
@@ -254,7 +253,7 @@
             document.getElementById('privacy-modal').style.display = 'none';
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script>
+    <!-- QR 판독 라이브러리는 기능 재공개 전까지 공개판에서 불러오지 않음. -->
     <script src="main.js?v=34"></script>
     <script>
       if ('serviceWorker' in navigator) {
