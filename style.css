@@ -388,3 +388,10 @@ html, body {
         font-size: 0.9rem;
     }
 }
+
+/* 데스크탑(맥/PC) 전용: 아이폰 주소창 버그와 무관하므로 100vh 완벽 적용하여 중앙 정렬 */
+@media (min-width: 600px) {
+    #app, .stage {
+        min-height: 100vh;
+    }
+}
