@@ -171,11 +171,14 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (stageNum === 3) initStage3();
     }
 
-    // --- 2단계: 후보군 떠다니기 로직 ---
+    // --- 2단계: 1~45 전체 번호를 3페이지로 선택 ---
     const orbField = document.getElementById('orb-field');
+    const pageIndicator = document.getElementById('number-page-indicator');
+    const btnPagePrev = document.getElementById('btn-page-prev');
+    const btnPageNext = document.getElementById('btn-page-next');
     let selectedNumbers = [];
-    let physicsFrame;
     let orbs = [];
+    let currentNumberPage = 0;
 
     function customRandom(seed) {
         let x = Math.sin(seed++) * 10000;
@@ -183,9 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initStage2(seed) {
-        if (physicsFrame) cancelAnimationFrame(physicsFrame);
         orbField.innerHTML = '';
         selectedNumbers = [];
+        currentNumberPage = 0;
         document.querySelectorAll('.slot').forEach(s => {
             s.classList.remove('filled'); s.textContent = '';
         });
@@ -197,77 +200,57 @@ document.addEventListener('DOMContentLoaded', () => {
             const j = Math.floor(customRandom(currentSeed++) * (i + 1));
             [allNumbers[i], allNumbers[j]] = [allNumbers[j], allNumbers[i]];
         }
-        const candidateNumbers = allNumbers.slice(0, 15);
+        const track = document.createElement('div');
+        track.className = 'number-pages-track';
+        orbField.appendChild(track);
 
-        const fieldRect = orbField.getBoundingClientRect();
-        const useStaticTouchLayout = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-        
-        candidateNumbers.forEach((num, index) => {
-            const orb = document.createElement('div');
-            orb.classList.add('candidate-orb');
-            orb.textContent = num; 
-            
-            const columns = 3;
-            const rows = 5;
-            const x = useStaticTouchLayout
-                ? ((index % columns) + 0.5) * (fieldRect.width / columns) - 25
-                : Math.random() * (fieldRect.width - 50);
-            const y = useStaticTouchLayout
-                ? (Math.floor(index / columns) + 0.5) * (fieldRect.height / rows) - 25
-                : Math.random() * (fieldRect.height - 50);
-            const vx = useStaticTouchLayout ? 0 : (Math.random() - 0.5) * 2.5;
-            const vy = useStaticTouchLayout ? 0 : (Math.random() - 0.5) * 2.5;
+        for (let pageIndex = 0; pageIndex < 3; pageIndex++) {
+            const page = document.createElement('div');
+            page.className = 'number-page';
+            page.setAttribute('aria-label', `${pageIndex + 1}번째 번호 페이지`);
 
-            // 이동은 transform 하나로만 처리해 시작 좌표가 두 번 적용되지 않게 한다.
-            orb.style.left = '0';
-            orb.style.top = '0';
-            orb.style.transform = `translate(${x}px, ${y}px)`;
-            orbField.appendChild(orb);
-            
-            const orbData = { el: orb, num: num, x: x, y: y, vx: vx, vy: vy };
-            orbs.push(orbData);
+            allNumbers.slice(pageIndex * 15, pageIndex * 15 + 15).forEach(num => {
+                const orb = document.createElement('button');
+                orb.type = 'button';
+                orb.className = 'candidate-orb';
+                orb.textContent = num;
+                orb.setAttribute('aria-label', `${num}번 선택`);
+                page.appendChild(orb);
 
-            // iOS는 움직이는 요소에서 touchend/click이 취소될 수 있으므로
-            // 손가락이 닿는 순간 선택하고 click은 키보드/구형 브라우저 보조로 둔다.
-            orb.addEventListener('pointerdown', (event) => {
-                event.preventDefault();
-                handleOrbClick(orbData);
-            });
-            orb.addEventListener('click', () => handleOrbClick(orbData));
-        });
-
-        if (!useStaticTouchLayout) startPhysics();
-    }
-
-    function startPhysics() {
-        if (physicsFrame) cancelAnimationFrame(physicsFrame);
-
-        function animate() {
-            const fieldRect = orbField.getBoundingClientRect();
-            const maxX = Math.max(0, fieldRect.width - 50);
-            const maxY = Math.max(0, fieldRect.height - 50);
-
-            orbs.forEach(orb => {
-                if (orb.el.classList.contains('selected')) return;
-                orb.x += orb.vx; orb.y += orb.vy;
-
-                if (orb.x <= 0 || orb.x >= maxX) {
-                    orb.x = Math.min(maxX, Math.max(0, orb.x));
-                    orb.vx *= -1;
-                }
-                if (orb.y <= 0 || orb.y >= maxY) {
-                    orb.y = Math.min(maxY, Math.max(0, orb.y));
-                    orb.vy *= -1;
-                }
-
-                orb.el.style.transform = `translate3d(${orb.x}px, ${orb.y}px, 0)`;
+                const orbData = { el: orb, num };
+                orbs.push(orbData);
+                orb.addEventListener('click', () => handleOrbClick(orbData));
             });
 
-            physicsFrame = requestAnimationFrame(animate);
+            track.appendChild(page);
         }
 
-        physicsFrame = requestAnimationFrame(animate);
+        updateNumberPage(0, false);
     }
+
+    function updateNumberPage(page, smooth = true) {
+        currentNumberPage = Math.max(0, Math.min(2, page));
+        const track = orbField.querySelector('.number-pages-track');
+        if (track) {
+            track.style.transform = `translateX(-${currentNumberPage * 100}%)`;
+            track.style.transition = smooth ? 'transform 0.3s ease' : 'none';
+        }
+        if (pageIndicator) pageIndicator.textContent = `${currentNumberPage + 1} / 3`;
+        if (btnPagePrev) btnPagePrev.disabled = currentNumberPage === 0;
+        if (btnPageNext) btnPageNext.disabled = currentNumberPage === 2;
+    }
+
+    if (btnPagePrev) btnPagePrev.addEventListener('click', () => updateNumberPage(currentNumberPage - 1));
+    if (btnPageNext) btnPageNext.addEventListener('click', () => updateNumberPage(currentNumberPage + 1));
+
+    let swipeStartX = 0;
+    orbField.addEventListener('touchstart', event => {
+        swipeStartX = event.changedTouches[0].clientX;
+    }, { passive: true });
+    orbField.addEventListener('touchend', event => {
+        const distance = event.changedTouches[0].clientX - swipeStartX;
+        if (Math.abs(distance) > 50) updateNumberPage(currentNumberPage + (distance < 0 ? 1 : -1));
+    }, { passive: true });
 
     let lastClickTime = 0;
     function handleOrbClick(orbData) {
@@ -286,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedNumbers.push(orbData.num);
 
         if (selectedNumbers.length === 6) {
-            if (physicsFrame) cancelAnimationFrame(physicsFrame);
             setTimeout(() => goToStage(3), 1000);
         }
     }
