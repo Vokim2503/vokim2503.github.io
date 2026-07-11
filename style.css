@@ -259,7 +259,7 @@ html, body {
     transition: background 0.2s, box-shadow 0.2s;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: manipulation;
+    touch-action: none;
     will-change: transform;
 }
 .candidate-orb:hover { background: rgba(255,255,255,0.1); }
@@ -375,6 +375,11 @@ html, body {
 }
 
 @media (max-width: 600px) {
+    .candidate-orb {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
     .floating-promo-btn {
         bottom: 15px;
         left: 15px;
