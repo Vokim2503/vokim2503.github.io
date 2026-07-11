@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v18'; // 아이폰 촬영 사진 다중 영역 QR 판독
+const CACHE_NAME = 'lotto-cache-v19'; // QR 복권번호 표시와 당첨번호 비교
 const urlsToCache = [
   './',
   './index.html',
