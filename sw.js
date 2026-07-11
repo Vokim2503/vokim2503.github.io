@@ -1,9 +1,9 @@
-const CACHE_NAME = 'lotto-cache-v3'; // 버전을 v3로 올려서 강제 업데이트 유도
+const CACHE_NAME = 'lotto-cache-v4'; // 버전 v4 강제 업데이트
 const urlsToCache = [
   './',
   './index.html',
-  './index.css',
-  './app.js',
+  './style.css',
+  './main.js',
   './manifest.json'
 ];
 
