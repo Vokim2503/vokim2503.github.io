@@ -51,7 +51,7 @@ html, body {
 #app {
     width: 100%;
     max-width: 600px;
-    /* min-height: 100vh 완전 삭제 */
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     position: relative; /* 하단 푸터 겹침 방지 복원 */
@@ -61,7 +61,7 @@ html, body {
 .stage {
     display: none; 
     width: 100%; 
-    /* min-height: 100vh 완전 삭제 */
+    min-height: 100svh;
     flex-direction: column;
     align-items: center;
     justify-content: center; /* 맥에서 상단으로 쏠리는 현상 방지용 중앙 정렬 복구 */
@@ -248,7 +248,7 @@ html, body {
 #energy-text { font-size: 1.5rem; font-weight: 700; }
 
 /* 2단계: 떠다니는 구슬들 */
-#orb-field { position: relative; width: 100%; flex-grow: 1; margin-bottom: 2rem; overflow: hidden; } /* 구슬이 경계선을 넘어가면서 화면을 찢고 늘리는 현상 방지 */
+#orb-field { position: relative; width: 100%; height: min(55vh, 480px); min-height: 340px; flex: 0 0 auto; margin-bottom: 2rem; overflow: hidden; } /* 모바일에서도 구슬 영역의 높이를 보장 */
 .candidate-orb {
     position: absolute; width: 50px; height: 50px; border-radius: 50%;
     background: rgba(255,255,255,0.05); border: 1px solid var(--primary-glow);
@@ -258,7 +258,7 @@ html, body {
     cursor: pointer; backdrop-filter: blur(4px);
     transition: transform 0.3s, background 0.3s; user-select: none;
 }
-.candidate-orb:hover { background: rgba(255,255,255,0.1); transform: scale(1.1); }
+.candidate-orb:hover { background: rgba(255,255,255,0.1); }
 .candidate-orb.selected {
     background: var(--primary-glow); color: #fff;
     box-shadow: 0 0 20px var(--primary-glow); pointer-events: none;
