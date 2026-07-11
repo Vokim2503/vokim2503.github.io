@@ -152,11 +152,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // 마지막 순간에만 부드럽게 한 번 스크롤
             scrollToBottom();
         }, 6000);
-
-        // 다음 단계로
+    }
+    
+    // 이벤트 리스너 중복 방지를 위해 전역으로 분리
+    const btnToCatch = document.getElementById('btn-to-catch');
+    if(btnToCatch) {
         btnToCatch.addEventListener('click', () => {
             goToStage(2, userSeedData[0]);
-        }, {once: true});
+        });
     }
 
     // --- 스테이지 전환 관리 ---
@@ -235,9 +238,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 16);
     }
 
+    let lastClickTime = 0;
     function handleOrbClick(orbData) {
         if (selectedNumbers.length >= 6) return;
         if (orbData.el.classList.contains('selected')) return;
+        
+        // 아이폰에서 여러 구슬이 동시에 터치되는 현상 방지 (0.1초 쿨타임)
+        const now = Date.now();
+        if (now - lastClickTime < 100) return;
+        lastClickTime = now;
 
         orbData.el.classList.add('selected');
         const slot = document.querySelector(`.slot[data-index="${selectedNumbers.length}"]`);
