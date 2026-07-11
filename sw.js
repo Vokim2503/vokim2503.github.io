@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v11'; // 애드센스 안내 및 개인정보 문구 강제 업데이트
+const CACHE_NAME = 'lotto-cache-v12'; // 최신 당첨번호 비교 기능 강제 업데이트
 const urlsToCache = [
   './',
   './index.html',
