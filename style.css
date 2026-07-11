@@ -506,3 +506,15 @@ html, body {
 .auto-game-result.prize { color:#00ffcc; font-weight:700; } .auto-game-result.no-prize { color:#999; }
 .compare-btn { background:rgba(0,255,204,.13); color:#b9fff1; border:1px solid rgba(0,255,204,.35); }
 .auto-actions { flex-wrap:wrap; justify-content:center; }
+
+
+/* QR 당첨 확인 */
+.qr-check-card { width:100%; display:flex; justify-content:space-between; align-items:center; gap:14px; margin:0 0 1.5rem; padding:1.1rem; border:1px solid rgba(0,255,204,.25); border-radius:16px; background:rgba(0,255,204,.07); text-align:left; }
+.qr-check-card h2 { margin:5px 0; color:#fff; font-size:1.08rem; } .qr-check-card p { margin:0; color:var(--text-muted); font-size:.8rem; line-height:1.5; }
+.qr-check-card .btn { flex:0 0 auto; padding:10px 14px; }
+.qr-modal { display:none; position:fixed; inset:0; z-index:10000; padding:18px; background:rgba(0,0,0,.86); align-items:center; justify-content:center; }
+.qr-modal-content { width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:18px; border:1px solid var(--primary-glow); border-radius:14px; background:#1e1e24; }
+.qr-modal-content h2 { color:#fff; margin:0 0 10px; } .qr-permission-guide { color:#bbb; font-size:.85rem; line-height:1.6; margin-bottom:12px; }
+#qr-reader { width:100%; background:#fff; border-radius:10px; overflow:hidden; color:#222; } #qr-reader a { color:#333; }
+.qr-status { min-height:28px; padding:10px 0; color:#00ffcc; font-size:.85rem; text-align:center; }
+@media (max-width:480px) { .qr-check-card { flex-direction:column; align-items:stretch; } .qr-check-card .btn { width:100%; } }
