@@ -53,8 +53,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartCalc = document.getElementById('btn-start-calc');
     if(btnStartCalc) {
         btnStartCalc.addEventListener('click', () => {
-            // 버튼 컨테이너 숨기고
+            // 버튼 컨테이너 숨기기
             document.getElementById('calc-action-container').style.display = 'none';
+            
+            // 상단 뉴스 컨테이너 숨겨서 터미널 창을 위로 끌어올리기
+            const trendContainer = document.querySelector('.trend-container');
+            if (trendContainer) {
+                trendContainer.style.display = 'none';
+            }
+            const divider = document.querySelector('.divider');
+            if (divider) {
+                divider.style.display = 'none';
+            }
+
             // 통합 터미널 열기
             document.getElementById('integrated-terminal').style.display = 'block';
             
@@ -73,6 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const actionBtn = document.getElementById('stage1-action');
         const btnToCatch = document.getElementById('btn-to-catch');
 
+        // 자동 스크롤 함수 (모바일 브라우저 환경에서 더 확실하게 화면을 끌어올림)
+        function scrollToBottom() {
+            const terminal = document.getElementById('integrated-terminal');
+            const actionBtn = document.getElementById('stage1-action');
+            
+            // 만약 하단 메뉴(버튼)가 보인다면 버튼을 화면에 맞추고, 아니면 터미널 창의 끝부분을 맞춤
+            if (actionBtn && actionBtn.style.display === 'block') {
+                actionBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            } else if (terminal) {
+                terminal.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
+        }
+
         // Reset
         [titleEl, lengthEl, timeSyncEl, timeEl, calcStartEl, finalSeedEl, actionBtn].forEach(el => {
             if(el) el.style.display = 'none';
@@ -82,16 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             titleEl.innerText = `선택된 이슈: [${currentTrend}]`;
             titleEl.style.display = 'block';
+            scrollToBottom();
         }, 800);
 
         setTimeout(() => {
             lengthEl.innerText = `기사 문자 길이 값 추출: ${currentTrend.length} bytes`;
             lengthEl.style.display = 'block';
+            scrollToBottom();
         }, 1600);
 
         // 2. 시간 동기화
         setTimeout(() => {
             timeSyncEl.style.display = 'block';
+            scrollToBottom();
         }, 2400);
 
         let clickTimeMs = Date.now();
@@ -101,11 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}:${date.getSeconds().toString().padStart(2,'0')}.${date.getMilliseconds()}`;
             timeEl.innerText = `사용자 고유 클릭 시간: ${timeStr}`;
             timeEl.style.display = 'block';
+            scrollToBottom();
         }, 3200);
 
         // 3. 연산 시작
         setTimeout(() => {
             calcStartEl.style.display = 'block';
+            scrollToBottom();
         }, 4000);
 
         // 4. 결과 출력
@@ -115,11 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             finalSeedEl.innerText = `=> 고유 난수(Seed): ${finalSeed} 생성 완료!`;
             finalSeedEl.style.display = 'block';
+            scrollToBottom();
         }, 5500);
 
         // 5. 버튼 표시
         setTimeout(() => {
             actionBtn.style.display = 'block';
+            scrollToBottom();
         }, 6000);
 
         // 다음 단계로
