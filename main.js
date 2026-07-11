@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2단계: 후보군 떠다니기 로직 ---
     const orbField = document.getElementById('orb-field');
     let selectedNumbers = [];
-    let physicsInterval;
+    let physicsFrame;
     let orbs = [];
 
     function customRandom(seed) {
@@ -183,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initStage2(seed) {
+        if (physicsFrame) cancelAnimationFrame(physicsFrame);
         orbField.innerHTML = '';
         selectedNumbers = [];
         document.querySelectorAll('.slot').forEach(s => {
@@ -226,18 +227,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startPhysics() {
-        if (physicsInterval) clearInterval(physicsInterval);
-        const fieldRect = orbField.getBoundingClientRect();
+        if (physicsFrame) cancelAnimationFrame(physicsFrame);
 
-        physicsInterval = setInterval(() => {
+        function animate() {
+            const fieldRect = orbField.getBoundingClientRect();
+            const maxX = Math.max(0, fieldRect.width - 50);
+            const maxY = Math.max(0, fieldRect.height - 50);
+
             orbs.forEach(orb => {
                 if (orb.el.classList.contains('selected')) return;
                 orb.x += orb.vx; orb.y += orb.vy;
-                if (orb.x <= 0 || orb.x >= fieldRect.width - 50) orb.vx *= -1;
-                if (orb.y <= 0 || orb.y >= fieldRect.height - 50) orb.vy *= -1;
-                orb.el.style.transform = `translate(${orb.x}px, ${orb.y}px)`;
+
+                if (orb.x <= 0 || orb.x >= maxX) {
+                    orb.x = Math.min(maxX, Math.max(0, orb.x));
+                    orb.vx *= -1;
+                }
+                if (orb.y <= 0 || orb.y >= maxY) {
+                    orb.y = Math.min(maxY, Math.max(0, orb.y));
+                    orb.vy *= -1;
+                }
+
+                orb.el.style.transform = `translate3d(${orb.x}px, ${orb.y}px, 0)`;
             });
-        }, 16);
+
+            physicsFrame = requestAnimationFrame(animate);
+        }
+
+        physicsFrame = requestAnimationFrame(animate);
     }
 
     let lastClickTime = 0;
@@ -257,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedNumbers.push(orbData.num);
 
         if (selectedNumbers.length === 6) {
-            clearInterval(physicsInterval);
+            if (physicsFrame) cancelAnimationFrame(physicsFrame);
             setTimeout(() => goToStage(3), 1000);
         }
     }
