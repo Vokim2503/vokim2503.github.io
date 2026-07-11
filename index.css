@@ -58,6 +58,21 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative; /* 하단 푸터 겹침 방지 복원 */
+    margin: 0 auto; /* 중앙 정렬 복원 */
+}
+
+/* 요소가 부드럽게 접히며 사라지는 애니메이션용 클래스 */
+.smooth-hide {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border: none !important;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stage {

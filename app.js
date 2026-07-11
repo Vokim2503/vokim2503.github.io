@@ -53,18 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartCalc = document.getElementById('btn-start-calc');
     if(btnStartCalc) {
         btnStartCalc.addEventListener('click', () => {
-            // 버튼 컨테이너 숨기기
-            document.getElementById('calc-action-container').style.display = 'none';
-            
-            // 상단 뉴스 컨테이너 숨겨서 터미널 창을 위로 끌어올리기
+            // 뉴스 및 구분선을 서서히 위로 접어 올리며 터미널 창을 끌어올림
+            const actionContainer = document.getElementById('calc-action-container');
             const trendContainer = document.querySelector('.trend-container');
-            if (trendContainer) {
-                trendContainer.style.display = 'none';
-            }
             const divider = document.querySelector('.divider');
-            if (divider) {
-                divider.style.display = 'none';
-            }
+            
+            if (actionContainer) actionContainer.classList.add('smooth-hide');
+            if (trendContainer) trendContainer.classList.add('smooth-hide');
+            if (divider) divider.classList.add('smooth-hide');
 
             // 통합 터미널 열기
             document.getElementById('integrated-terminal').style.display = 'block';
