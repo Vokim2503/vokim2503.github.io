@@ -256,12 +256,17 @@ html, body {
     display: flex; justify-content: center; align-items: center;
     font-size: 1.2rem; font-weight: 700; color: transparent;
     cursor: pointer; backdrop-filter: blur(4px);
-    transition: transform 0.3s, background 0.3s; user-select: none;
+    transition: background 0.2s, box-shadow 0.2s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    will-change: transform;
 }
 .candidate-orb:hover { background: rgba(255,255,255,0.1); }
 .candidate-orb.selected {
     background: var(--primary-glow); color: #fff;
     box-shadow: 0 0 20px var(--primary-glow); pointer-events: none;
+    will-change: auto;
 }
 
 /* 슬롯 */
