@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이슈 로또 - 뉴스와 시간으로 만드는 오락용 번호 생성기</title>
     <meta name="description" content="뉴스 제목과 버튼을 누른 시간을 조합해 1~45 범위의 무작위 번호를 만드는 오락용 로또 번호 생성기입니다.">
-    <link rel="stylesheet" href="style.css?v=28">
+    <link rel="stylesheet" href="style.css?v=32">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     
     <!-- SEO & 바이럴 최적화 (카카오톡, 페이스북 공유 시 예쁘게 나오도록 설정) -->
@@ -221,6 +221,7 @@
                 </div>
                 <div id="qr-reader" aria-label="QR 카메라 화면"></div>
                 <div id="qr-status" class="qr-status" aria-live="polite"></div>
+                <div id="qr-ticket-result" class="qr-ticket-result" aria-live="polite"></div>
                 <button id="btn-open-qr-result" class="btn primary" type="button" style="display:none; width:100%;">동행복권 공식 결과 열기</button>
                 <button id="btn-close-qr" class="btn secondary" type="button" style="width:100%; margin-top:10px;">닫기</button>
             </div>
@@ -254,7 +255,7 @@
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script>
-    <script src="main.js?v=31"></script>
+    <script src="main.js?v=32"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
