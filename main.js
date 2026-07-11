@@ -305,10 +305,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const balls = document.createElement('div');
             balls.className = 'auto-game-balls';
-            game.forEach(num => {
+            game.forEach((num, ballIndex) => {
                 const ball = document.createElement('span');
                 ball.className = 'auto-ball';
                 ball.textContent = num;
+                const revealOrder = gameIndex % 2 === 0 ? ballIndex : 5 - ballIndex;
+                ball.style.animationDelay = `${500 + (gameIndex * 6 + revealOrder) * 90}ms`;
                 if (num <= 10) ball.classList.add('yellow');
                 else if (num <= 20) ball.classList.add('blue');
                 else if (num <= 30) ball.classList.add('red');
