@@ -247,26 +247,45 @@ html, body {
 .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow)); transition: width 0.1s ease-out; box-shadow: 0 0 10px var(--secondary-glow); }
 #energy-text { font-size: 1.5rem; font-weight: 700; }
 
-/* 2단계: 떠다니는 구슬들 */
-#orb-field { position: relative; width: 100%; height: min(55vh, 480px); min-height: 340px; flex: 0 0 auto; margin-bottom: 2rem; overflow: hidden; } /* 모바일에서도 구슬 영역의 높이를 보장 */
+/* 2단계: 1~45 전체 번호를 넘겨보는 3개 페이지 */
+.number-page-guide {
+    width: 100%; display: flex; justify-content: center; align-items: center;
+    gap: 1rem; margin-bottom: 0.8rem; color: var(--text-muted); font-weight: 700;
+}
+.page-nav-btn {
+    width: 42px; height: 36px; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 18px; background: rgba(255,255,255,0.08); color: #fff;
+    font-size: 1.5rem; cursor: pointer;
+}
+.page-nav-btn:disabled { opacity: 0.25; cursor: default; }
+#orb-field {
+    position: relative; width: 100%; height: min(52vh, 440px); min-height: 350px;
+    flex: 0 0 auto; margin-bottom: 1.5rem; overflow: hidden; touch-action: pan-y;
+}
+.number-pages-track {
+    width: 100%; height: 100%; display: flex;
+}
+.number-page {
+    min-width: 100%; height: 100%; display: grid;
+    grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr);
+    gap: 12px; padding: 8px 18px; place-items: center;
+}
 .candidate-orb {
-    position: absolute; width: 50px; height: 50px; border-radius: 50%;
+    position: relative; width: 58px; height: 58px; border-radius: 50%;
     background: rgba(255,255,255,0.05); border: 1px solid var(--primary-glow);
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
     display: flex; justify-content: center; align-items: center;
-    font-size: 1.2rem; font-weight: 700; color: transparent;
-    cursor: pointer; backdrop-filter: blur(4px);
-    transition: background 0.2s, box-shadow 0.2s;
+    font-size: 1.2rem; font-weight: 700; color: #fff;
+    cursor: pointer; backdrop-filter: none;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: none;
-    will-change: transform;
+    touch-action: manipulation;
 }
-.candidate-orb:hover { background: rgba(255,255,255,0.1); }
+.candidate-orb:hover { background: rgba(255,255,255,0.1); transform: scale(1.06); }
 .candidate-orb.selected {
     background: var(--primary-glow); color: #fff;
     box-shadow: 0 0 20px var(--primary-glow); pointer-events: none;
-    will-change: auto;
 }
 
 /* 슬롯 */
