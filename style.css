@@ -39,7 +39,7 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100vh; /* 화면을 꽉 채우되 컨텐츠가 늘어나면 스크롤 가능하도록 설정 */
+    /* 100vh 완전 삭제 (아이폰 화면 떨림의 절대적 원흉) */
     background-color: var(--bg-dark);
     color: var(--text-main);
     font-family: 'Outfit', 'Noto Sans KR', sans-serif;
@@ -51,7 +51,7 @@ html, body {
 #app {
     width: 100%;
     max-width: 600px;
-    min-height: 100vh;
+    /* min-height: 100vh 완전 삭제 */
     display: flex;
     flex-direction: column;
     position: relative; /* 하단 푸터 겹침 방지 복원 */
@@ -61,7 +61,7 @@ html, body {
 .stage {
     display: none; 
     width: 100%; 
-    min-height: 100vh;
+    /* min-height: 100vh 완전 삭제 */
     flex-direction: column;
     align-items: center;
     justify-content: center; /* 맥에서 상단으로 쏠리는 현상 방지용 중앙 정렬 복구 */
