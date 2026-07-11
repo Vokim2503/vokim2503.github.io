@@ -487,3 +487,22 @@ html, body {
 .info-card h2 { margin: 0 0 0.6rem; color: #fff; font-size: 1.05rem; }
 .info-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
 .info-card a { color: #9adfff; }
+
+
+/* 최신 당첨번호 및 자동 5게임 비교 */
+.latest-result-card { width:100%; margin:1.5rem 0; padding:1.2rem; border:1px solid rgba(255,255,255,0.12); border-radius:16px; background:rgba(0,0,0,0.28); }
+.latest-result-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; text-align:left; }
+.latest-result-head h2 { margin:5px 0 3px; font-size:1.15rem; color:#fff; }
+.latest-result-head p { margin:0; color:var(--text-muted); font-size:0.82rem; }
+.latest-result-head a { color:#9adfff; font-size:0.8rem; white-space:nowrap; }
+.latest-badge { color:#00ffcc; font-size:0.72rem; font-weight:700; }
+.latest-winning-balls { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:7px; margin:1rem 0; }
+.winning-ball { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; box-shadow:0 3px 8px rgba(0,0,0,.35); }
+.winning-ball.yellow { background:linear-gradient(135deg,#facc15,#eab308); } .winning-ball.blue { background:linear-gradient(135deg,#60a5fa,#3b82f6); } .winning-ball.gray { background:linear-gradient(135deg,#9ca3af,#6b7280); } .winning-ball.bonus { background:linear-gradient(135deg,#a78bfa,#7c3aed); }
+.bonus-plus { color:var(--text-muted); font-weight:700; }
+.result-caution { margin:0; color:#777; font-size:0.72rem; line-height:1.5; text-align:center; }
+.auto-game-row { flex-wrap:wrap; }
+.auto-game-result { width:100%; padding-top:6px; border-top:1px solid rgba(255,255,255,.08); color:var(--text-muted); font-size:.78rem; text-align:right; min-height:24px; }
+.auto-game-result.prize { color:#00ffcc; font-weight:700; } .auto-game-result.no-prize { color:#999; }
+.compare-btn { background:rgba(0,255,204,.13); color:#b9fff1; border:1px solid rgba(0,255,204,.35); }
+.auto-actions { flex-wrap:wrap; justify-content:center; }
