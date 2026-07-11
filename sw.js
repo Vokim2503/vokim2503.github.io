@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v19'; // QR 복권번호 표시와 당첨번호 비교
+const CACHE_NAME = 'lotto-cache-v21'; // 아이폰 첫 화면과 외부 뉴스 로딩 안정화
 const urlsToCache = [
   './',
   './index.html',
@@ -34,8 +34,13 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // 네트워크 우선(Network-First) 전략으로 변경:
-  // 항상 최신 파일을 받아오고, 오프라인일 때만 캐시를 사용
+  if (event.request.method !== 'GET') return;
+
+  const requestUrl = new URL(event.request.url);
+  // 뉴스·광고 등 외부 요청은 서비스워커가 가로채지 않는다.
+  if (requestUrl.origin !== self.location.origin) return;
+
+  // 같은 사이트 파일만 네트워크 우선으로 받고, 오프라인일 때 캐시를 사용한다.
   event.respondWith(
     fetch(event.request).catch(() => {
       return caches.match(event.request);
