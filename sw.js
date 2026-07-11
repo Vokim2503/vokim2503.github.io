@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v10'; // 아이폰 번호 등장 효과 강제 업데이트
+const CACHE_NAME = 'lotto-cache-v11'; // 애드센스 안내 및 개인정보 문구 강제 업데이트
 const urlsToCache = [
   './',
   './index.html',
