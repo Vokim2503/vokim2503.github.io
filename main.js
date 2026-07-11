@@ -507,7 +507,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnCloseQr?.addEventListener('click', closeQrScanner);
     btnOpenQrResult?.addEventListener('click', () => {
-        if (verifiedQrUrl) window.open(verifiedQrUrl, '_blank', 'noopener,noreferrer');
+        if (!verifiedQrUrl) {
+            setQrStatus('먼저 복권 QR을 카메라 또는 사진으로 확인해 주세요.', true);
+            return;
+        }
+        // 아이폰과 홈 화면 앱에서 새 창이 차단되지 않도록 현재 화면에서 공식 결과를 연다.
+        window.location.assign(verifiedQrUrl);
     });
 
     let lastClickTime = 0;
