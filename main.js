@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentNumberPage = 0;
     let autoGenerationCount = 0;
     let currentAutoGames = [];
+    let autoAnimationTimers = [];
 
     function customRandom(seed) {
         let x = Math.sin(seed++) * 10000;
@@ -294,6 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderAutoGames() {
         if (!autoGamesEl) return;
+        autoAnimationTimers.forEach(timer => clearTimeout(timer));
+        autoAnimationTimers = [];
         autoGamesEl.innerHTML = '';
         currentAutoGames.forEach((game, gameIndex) => {
             const row = document.createElement('div');
@@ -307,16 +310,17 @@ document.addEventListener('DOMContentLoaded', () => {
             balls.className = 'auto-game-balls';
             game.forEach((num, ballIndex) => {
                 const ball = document.createElement('span');
-                ball.className = 'auto-ball';
+                ball.className = `auto-ball waiting ${gameIndex % 2 === 0 ? 'from-left' : 'from-right'}`;
                 ball.textContent = num;
                 const revealOrder = gameIndex % 2 === 0 ? ballIndex : 5 - ballIndex;
-                ball.style.animationDelay = `${500 + (gameIndex * 6 + revealOrder) * 90}ms`;
+                const revealDelay = 500 + (gameIndex * 6 + revealOrder) * 90;
                 if (num <= 10) ball.classList.add('yellow');
                 else if (num <= 20) ball.classList.add('blue');
                 else if (num <= 30) ball.classList.add('red');
                 else if (num <= 40) ball.classList.add('gray');
                 else ball.classList.add('green');
                 balls.appendChild(ball);
+                autoAnimationTimers.push(setTimeout(() => { ball.classList.add('show'); }, revealDelay));
             });
             row.appendChild(balls);
             autoGamesEl.appendChild(row);
