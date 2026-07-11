@@ -521,4 +521,17 @@ html, body {
 .qr-file-label { display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .qr-status { min-height:28px; padding:10px 0; color:#00ffcc; font-size:.85rem; line-height:1.5; text-align:center; }
 .qr-status.error { color:#ffb4b4; }
+.qr-ticket-result { display:none; margin:4px 0 12px; padding:12px; border:1px solid rgba(0,255,204,.28); border-radius:12px; background:rgba(0,0,0,.28); }
+.qr-ticket-heading { margin-bottom:10px; color:#fff; font-weight:700; text-align:center; }
+.qr-ticket-game { display:grid; grid-template-columns:22px 1fr 62px; align-items:center; gap:7px; padding:7px 0; border-top:1px solid rgba(255,255,255,.08); }
+.qr-ticket-label { color:#aaa; font-weight:700; }
+.qr-ticket-balls { display:flex; justify-content:space-between; gap:3px; }
+.qr-ticket-ball { position:relative; width:31px; height:31px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#555; color:#fff; font-size:.78rem; font-weight:700; }
+.qr-ticket-ball.matched { background:#00a884; box-shadow:0 0 0 3px #8affdf, 0 0 12px rgba(0,255,204,.7); }
+.qr-ticket-ball.matched::after { content:'✓'; position:absolute; top:-8px; right:-5px; width:16px; height:16px; border-radius:50%; background:#fff; color:#008f73; font-size:11px; line-height:16px; text-align:center; }
+.qr-ticket-ball.bonus-matched { background:#7c3aed; box-shadow:0 0 0 3px #c4b5fd; }
+.qr-ticket-game-result { color:#aaa; font-size:.7rem; text-align:right; }
+.qr-ticket-game-result.prize { color:#00ffcc; font-weight:700; }
+.qr-ticket-guide { margin:10px 0 0; color:#aaa; font-size:.72rem; line-height:1.5; text-align:center; }
+@media (max-width:380px) { .qr-ticket-ball { width:27px; height:27px; font-size:.7rem; } .qr-ticket-game { grid-template-columns:18px 1fr 55px; gap:4px; } }
 @media (max-width:480px) { .qr-check-card { flex-direction:column; align-items:stretch; } .qr-check-card .btn { width:100%; } }
