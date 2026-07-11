@@ -95,28 +95,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Reset
-        [titleEl, lengthEl, timeSyncEl, timeEl, calcStartEl, finalSeedEl, actionBtn].forEach(el => {
-            if(el) el.style.display = 'none';
+        // Reset (미리 공간을 차지하게 하고 투명도만 조절하여 화면 높이 떨림 현상 완벽 방지)
+        [titleEl, lengthEl, timeSyncEl, timeEl, calcStartEl, finalSeedEl].forEach(el => {
+            if(el) {
+                el.style.display = 'block';
+                el.style.opacity = '0';
+                el.style.transition = 'opacity 0.4s ease';
+            }
         });
+        if (actionBtn) actionBtn.style.display = 'none';
 
         // 1. 이슈 데이터 표시
         setTimeout(() => {
             titleEl.innerText = `선택된 이슈: [${currentTrend}]`;
-            titleEl.style.display = 'block';
-            scrollToBottom();
+            titleEl.style.opacity = '1';
         }, 800);
 
         setTimeout(() => {
             lengthEl.innerText = `기사 문자 길이 값 추출: ${currentTrend.length} bytes`;
-            lengthEl.style.display = 'block';
-            scrollToBottom();
+            lengthEl.style.opacity = '1';
         }, 1600);
 
         // 2. 시간 동기화
         setTimeout(() => {
-            timeSyncEl.style.display = 'block';
-            scrollToBottom();
+            timeSyncEl.style.opacity = '1';
         }, 2400);
 
         let clickTimeMs = Date.now();
@@ -125,14 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')} ` +
                             `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}:${date.getSeconds().toString().padStart(2,'0')}.${date.getMilliseconds()}`;
             timeEl.innerText = `사용자 고유 클릭 시간: ${timeStr}`;
-            timeEl.style.display = 'block';
-            scrollToBottom();
+            timeEl.style.opacity = '1';
         }, 3200);
 
         // 3. 연산 시작
         setTimeout(() => {
-            calcStartEl.style.display = 'block';
-            scrollToBottom();
+            calcStartEl.style.opacity = '1';
         }, 4000);
 
         // 4. 결과 출력
@@ -141,13 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
             userSeedData = [finalSeed]; // 저장
             
             finalSeedEl.innerText = `=> 고유 난수(Seed): ${finalSeed} 생성 완료!`;
-            finalSeedEl.style.display = 'block';
-            scrollToBottom();
+            finalSeedEl.style.opacity = '1';
         }, 5500);
 
         // 5. 버튼 표시
         setTimeout(() => {
             actionBtn.style.display = 'block';
+            // 마지막 순간에만 부드럽게 한 번 스크롤
             scrollToBottom();
         }, 6000);
 
