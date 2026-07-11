@@ -474,3 +474,16 @@ html, body {
         min-height: 100vh;
     }
 }
+
+
+/* 애드센스 심사를 위한 서비스 설명 영역 */
+.service-info {
+    width: 100%; display: grid; gap: 12px; margin: 2rem 0;
+}
+.info-card {
+    padding: 1.1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+    background: rgba(0,0,0,0.22); text-align: left;
+}
+.info-card h2 { margin: 0 0 0.6rem; color: #fff; font-size: 1.05rem; }
+.info-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+.info-card a { color: #9adfff; }
