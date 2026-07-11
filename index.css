@@ -39,19 +39,14 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100vh;
-    background-color: var(--bg-darker);
-}
-
-body {
-    font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    min-height: 100vh; /* 표준 웹 구조 복원 (고정 스크롤 제거) */
+    background-color: var(--bg-dark);
     color: var(--text-main);
-    display: flex;
-    justify-content: center;
-    background: radial-gradient(circle at 50% 50%, var(--bg-dark) 0%, var(--bg-darker) 100%);
-    transition: background 1s ease;
+    font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    overflow-x: hidden; /* 가로 스크롤만 방지 */
 }
 
+/* --- 공통 레이아웃 --- */
 #app {
     width: 100%;
     max-width: 600px;
@@ -63,14 +58,12 @@ body {
 }
 
 .stage {
-    display: none; /* 비활성화 상태에서는 아예 레이아웃에서 제거 (스크롤 겹침 완전 방지) */
+    display: none; 
     width: 100%; 
     min-height: 100vh;
     flex-direction: column;
     align-items: center;
     padding: 2rem 1rem 120px 1rem;
-    opacity: 0;
-    animation: stageFadeIn 0.5s ease forwards;
 }
 
 @keyframes stageFadeIn {
