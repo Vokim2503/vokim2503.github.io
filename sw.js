@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v16'; // 아이폰 당첨 결과 열기 안정화
+const CACHE_NAME = 'lotto-cache-v17'; // 아이폰 기본 카메라 촬영 QR 확인
 const urlsToCache = [
   './',
   './index.html',
