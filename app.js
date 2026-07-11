@@ -66,7 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // (화면 떨림 현상 완벽 차단)
             setTimeout(() => {
                 const y = terminal.getBoundingClientRect().top + window.scrollY - 20;
-                window.scrollTo({ top: y, behavior: 'smooth' });
+                // 구형 아이폰 및 특정 브라우저(카톡 등)에서 객체 형태의 scrollTo({top...}) 문법을 지원하지 않아 
+                // 자바스크립트 전체가 다운되는 현상이 확인됨.
+                // 따라서 전 세계 모든 브라우저가 지원하는 가장 원시적인 방식인 scrollTo(x, y)로 완전 교체함.
+                window.scrollTo(0, y);
             }, 100);
             
             runTerminalAnimation();
@@ -88,10 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         function scrollToBottom() {
             // scrollIntoView가 유발하는 아이폰 덜덜 떨림 현상을 차단하기 위해
             // 브라우저의 절대 좌표 기반 스크롤 방식을 사용합니다.
-            window.scrollTo({ 
-                top: document.body.scrollHeight, 
-                behavior: 'smooth' 
-            });
+            // 구형 기기 호환을 위해 안전한 scrollTo(x, y) 원시 문법 사용.
+            window.scrollTo(0, document.body.scrollHeight);
         }
 
         // Reset (미리 공간을 차지하게 하고 투명도만 조절하여 화면 높이 떨림 현상 완벽 방지)
