@@ -5,18 +5,37 @@ document.addEventListener('DOMContentLoaded', () => {
     let energy = 0;
     
     // 실시간 뉴스 기사 가져오기 (대구매일신문 RSS)
-    let currentTrend = "압도적인 긍정 에너지"; // 기본값
+    let currentTrend = "오늘의 긍정적인 파동"; // 뉴스가 늦거나 실패해도 즉시 사용할 기본값
     let newsLink = "#";
     const newsRSSUrl = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.imaeil.com%2Frss";
-    
-    // API 응답 지연을 방지하기 위한 3초 타임아웃
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-    fetch(newsRSSUrl, { signal: controller.signal })
-        .then(res => res.json())
+    const keywordEl = document.getElementById('live-trend-keyword');
+    if (keywordEl) keywordEl.textContent = currentTrend;
+
+    function showNewsTrend(title, link) {
+        if (!keywordEl || !title || !link) return;
+        currentTrend = title;
+        newsLink = link;
+        const anchor = document.createElement('a');
+        anchor.href = newsLink;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.style.cssText = 'color:#fff; text-decoration:underline; text-decoration-color:var(--primary-glow); text-underline-offset:4px;';
+        anchor.textContent = `“${currentTrend}”`;
+        keywordEl.replaceChildren(anchor);
+    }
+
+    // 외부 뉴스 API가 느리거나 아이폰에서 차단돼도 앱 전체는 기본 문구로 즉시 작동한다.
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 5000) : null;
+    const fetchOptions = controller ? { signal: controller.signal } : {};
+
+    fetch(newsRSSUrl, fetchOptions)
+        .then(res => {
+            if (!res.ok) throw new Error(`뉴스 응답 오류: ${res.status}`);
+            return res.json();
+        })
         .then(data => {
-            clearTimeout(timeoutId);
             if(data && data.items && data.items.length > 0) {
                 // 특정 키워드(정치인 등)가 포함된 기사를 제외하는 필터링 로직
                 const forbiddenKeywords = ['윤석열', '대통령', '김건희', '한동훈', '이재명', '정부', '여당', '야당'];
@@ -34,19 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const maxIndex = Math.min(5, validItems.length);
                 const randomIndex = Math.floor(Math.random() * maxIndex);
                 const newsItem = validItems[randomIndex];
-                currentTrend = newsItem.title;
-                newsLink = newsItem.link;
-                
-                const keywordEl = document.getElementById('live-trend-keyword');
-                if(keywordEl) {
-                    keywordEl.innerHTML = `<a href="${newsLink}" target="_blank" style="color: #fff; text-decoration: underline; text-decoration-color: var(--primary-glow); text-underline-offset: 4px;">"${currentTrend}"</a>`;
-                }
+                showNewsTrend(newsItem.title, newsItem.link);
             }
         })
         .catch(err => {
             console.log("뉴스 로딩 실패 또는 지연", err);
-            const keywordEl = document.getElementById('live-trend-keyword');
-            if(keywordEl) keywordEl.innerText = `[오늘의 긍정적인 파동]`;
+            // 기본 문구를 이미 표시했으므로 앱 사용을 막지 않는다.
+        })
+        .finally(() => {
+            if (timeoutId) clearTimeout(timeoutId);
         });
 
     // --- 0단계: 메인 버튼 클릭 ---
@@ -186,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAutoRegenerate = document.getElementById('btn-auto-regenerate');
     const btnAutoCopy = document.getElementById('btn-auto-copy');
     const btnAutoCompare = document.getElementById('btn-auto-compare');
-    const latestLottoResult = { round: 1231, date: '2026-07-04', numbers: [4, 13, 14, 18, 31, 38], bonus: 15 };
+    const latestLottoResult = { round: 1232, date: '2026-07-11', numbers: [12, 15, 19, 22, 24, 36], bonus: 3 };
     let selectedNumbers = [];
     let orbs = [];
     let currentNumberPage = 0;
