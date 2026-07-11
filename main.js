@@ -386,6 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrModal = document.getElementById('qr-modal');
     const qrReader = document.getElementById('qr-reader');
     const qrStatus = document.getElementById('qr-status');
+    const qrTicketResult = document.getElementById('qr-ticket-result');
     const btnOpenQrResult = document.getElementById('btn-open-qr-result');
     let qrScanner = null;
     let qrCameraRunning = false;
@@ -409,6 +410,106 @@ document.addEventListener('DOMContentLoaded', () => {
     function setQrStatus(message, isError = false) {
         qrStatus.textContent = message;
         qrStatus.classList.toggle('error', isError);
+    }
+
+    function parseLottoTicketQr(qrText) {
+        try {
+            const url = new URL(qrText);
+            const rawValue = url.searchParams.get('v') || '';
+            const match = rawValue.match(/^(\d{3,4})([a-zA-Z])(.*)$/);
+            if (!match) return null;
+
+            const round = Number(match[1]);
+            const delimiter = match[2];
+            const gameParts = match[3].split(delimiter);
+            const games = [];
+
+            for (const part of gameParts) {
+                const digits = part.replace(/\D/g, '');
+                if (digits.length < 12) continue;
+                const numbers = [];
+                for (let index = 0; index < 12; index += 2) {
+                    numbers.push(Number(digits.slice(index, index + 2)));
+                }
+                const validNumbers = numbers.length === 6 &&
+                    new Set(numbers).size === 6 &&
+                    numbers.every(number => number >= 1 && number <= 45);
+                if (validNumbers) games.push(numbers.sort((a, b) => a - b));
+                if (games.length === 5) break;
+            }
+
+            return games.length ? { round, games } : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function getGamePrize(numbers, winningResult) {
+        const matches = numbers.filter(number => winningResult.numbers.includes(number)).length;
+        const hasBonus = numbers.includes(winningResult.bonus);
+        if (matches === 6) return { matches, hasBonus, label: '1등' };
+        if (matches === 5 && hasBonus) return { matches, hasBonus, label: '2등' };
+        if (matches === 5) return { matches, hasBonus, label: '3등' };
+        if (matches === 4) return { matches, hasBonus, label: '4등' };
+        if (matches === 3) return { matches, hasBonus, label: '5등' };
+        return { matches, hasBonus, label: `${matches}개 일치` };
+    }
+
+    function renderScannedTicket(ticket) {
+        qrTicketResult.innerHTML = '';
+        qrTicketResult.style.display = 'block';
+
+        const heading = document.createElement('div');
+        heading.className = 'qr-ticket-heading';
+        heading.textContent = `제${ticket.round}회 복권 번호`;
+        qrTicketResult.appendChild(heading);
+
+        const canCompare = ticket.round === latestLottoResult.round;
+        ticket.games.forEach((numbers, gameIndex) => {
+            const row = document.createElement('div');
+            row.className = 'qr-ticket-game';
+
+            const label = document.createElement('span');
+            label.className = 'qr-ticket-label';
+            label.textContent = String.fromCharCode(65 + gameIndex);
+            row.appendChild(label);
+
+            const balls = document.createElement('div');
+            balls.className = 'qr-ticket-balls';
+            numbers.forEach(number => {
+                const ball = document.createElement('span');
+                ball.className = 'qr-ticket-ball';
+                ball.textContent = number;
+                if (canCompare && latestLottoResult.numbers.includes(number)) {
+                    ball.classList.add('matched');
+                    ball.setAttribute('aria-label', `${number}번 당첨번호 일치`);
+                } else if (canCompare && number === latestLottoResult.bonus) {
+                    ball.classList.add('bonus-matched');
+                    ball.setAttribute('aria-label', `${number}번 보너스번호 일치`);
+                }
+                balls.appendChild(ball);
+            });
+            row.appendChild(balls);
+
+            const result = document.createElement('span');
+            result.className = 'qr-ticket-game-result';
+            if (canCompare) {
+                const prize = getGamePrize(numbers, latestLottoResult);
+                result.textContent = prize.label;
+                if (prize.matches >= 3) result.classList.add('prize');
+            } else {
+                result.textContent = '번호 확인';
+            }
+            row.appendChild(result);
+            qrTicketResult.appendChild(row);
+        });
+
+        const guide = document.createElement('p');
+        guide.className = 'qr-ticket-guide';
+        guide.textContent = canCompare
+            ? '✓ 표시된 공은 당첨번호와 일치합니다. 보라색 공은 보너스번호입니다.'
+            : `현재 앱은 제${latestLottoResult.round}회 당첨번호 비교를 지원합니다. 제${ticket.round}회 결과는 아래 공식 결과에서 확인하세요.`;
+        qrTicketResult.appendChild(guide);
     }
 
     async function stopQrScanner() {
@@ -447,7 +548,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         verifiedQrUrl = officialUrl;
-        setQrStatus('동행복권 공식 QR을 확인했습니다. 아래 버튼을 눌러 당첨 결과를 확인하세요.');
+        const ticket = parseLottoTicketQr(decodedText);
+        if (ticket) {
+            renderScannedTicket(ticket);
+            setQrStatus('복권 번호를 읽었습니다. 표시된 일치 번호를 확인해 주세요.');
+        } else {
+            qrTicketResult.style.display = 'none';
+            setQrStatus('공식 QR은 확인했지만 번호 형식을 읽지 못했습니다. 아래 공식 결과를 이용해 주세요.', true);
+        }
         btnOpenQrResult.style.display = 'block';
         await stopQrScanner();
     }
@@ -464,6 +572,8 @@ document.addEventListener('DOMContentLoaded', () => {
         qrModal.style.display = 'flex';
         setQrStatus('카메라 또는 저장된 복권 사진을 선택해 주세요.');
         btnOpenQrResult.style.display = 'none';
+        qrTicketResult.style.display = 'none';
+        qrTicketResult.innerHTML = '';
         verifiedQrUrl = '';
         qrReader.style.display = 'none';
     });
