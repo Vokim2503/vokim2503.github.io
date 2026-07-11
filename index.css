@@ -63,6 +63,7 @@ html, body {
     min-height: 100vh;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* 맥에서 상단으로 쏠리는 현상 방지용 중앙 정렬 복구 */
     padding: 2rem 1rem 120px 1rem;
     box-sizing: border-box; /* 패딩 포함 크기 계산 (스크롤 넘침 방지) */
 }

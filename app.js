@@ -62,16 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const terminal = document.getElementById('integrated-terminal');
             terminal.style.display = 'block';
 
-            // 브라우저 기본 부드러운 스크롤을 이용해 터미널 영역으로 부드럽게 이동
-            // (화면 떨림 현상 완벽 차단)
-            setTimeout(() => {
-                const y = terminal.getBoundingClientRect().top + window.scrollY - 20;
-                // 구형 아이폰 및 특정 브라우저(카톡 등)에서 객체 형태의 scrollTo({top...}) 문법을 지원하지 않아 
-                // 자바스크립트 전체가 다운되는 현상이 확인됨.
-                // 따라서 전 세계 모든 브라우저가 지원하는 가장 원시적인 방식인 scrollTo(x, y)로 완전 교체함.
-                window.scrollTo(0, y);
-            }, 100);
+            // 스크롤 버그를 원천 차단하기 위해 스크롤 이동 대신 상단 뉴스 영역을 아예 숨겨서
+            // 터미널이 자연스럽게 화면 맨 위로 올라오게 만듭니다.
+            const trendContainer = document.querySelector('.trend-container');
+            const actionContainer = document.getElementById('calc-action-container');
+            const divider = document.querySelector('.divider');
+            if (trendContainer) trendContainer.style.display = 'none';
+            if (actionContainer) actionContainer.style.display = 'none';
+            if (divider) divider.style.display = 'none';
             
+            // 맨 위로 무조건 이동시킴 (좌표 계산 안함)
+            window.scrollTo(0, 0);
+
             runTerminalAnimation();
         });
     }
@@ -87,12 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const actionBtn = document.getElementById('stage1-action');
         const btnToCatch = document.getElementById('btn-to-catch');
 
-        // 자동 스크롤 함수 (표준 문서 레이아웃으로 변경되었으므로 전체 문서 스크롤 적용)
+        // 자동 스크롤 함수 완전 삭제 (위에서 상단 영역을 가렸으므로 필요 없음)
         function scrollToBottom() {
-            // scrollIntoView가 유발하는 아이폰 덜덜 떨림 현상을 차단하기 위해
-            // 브라우저의 절대 좌표 기반 스크롤 방식을 사용합니다.
-            // 구형 기기 호환을 위해 안전한 scrollTo(x, y) 원시 문법 사용.
-            window.scrollTo(0, document.body.scrollHeight);
+            // Nothing to do
         }
 
         // Reset (미리 공간을 차지하게 하고 투명도만 조절하여 화면 높이 떨림 현상 완벽 방지)
