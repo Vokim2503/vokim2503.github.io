@@ -381,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnOpenQr = document.getElementById('btn-open-qr');
     const btnCloseQr = document.getElementById('btn-close-qr');
     const btnQrCamera = document.getElementById('btn-qr-camera');
+    const qrCameraInput = document.getElementById('qr-camera-input');
     const qrFileInput = document.getElementById('qr-file-input');
     const qrModal = document.getElementById('qr-modal');
     const qrReader = document.getElementById('qr-reader');
@@ -389,6 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let qrScanner = null;
     let qrCameraRunning = false;
     let verifiedQrUrl = '';
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
     function isOfficialLottoQr(text) {
         try {
@@ -466,6 +469,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnQrCamera?.addEventListener('click', async () => {
+        // iPhone에서는 실시간 영상 권한이 불안정할 수 있어 기본 후면 카메라로 촬영 후 판독한다.
+        if (isIOSDevice) {
+            setQrStatus('아이폰 카메라가 열리면 복권의 QR 부분을 선명하게 촬영해 주세요.');
+            qrCameraInput?.click();
+            return;
+        }
+
         if (!prepareQrScanner()) return;
         btnQrCamera.disabled = true;
         btnQrCamera.textContent = '카메라 여는 중…';
@@ -487,8 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    qrFileInput?.addEventListener('change', async event => {
-        const file = event.target.files?.[0];
+    async function scanQrImageFile(file, inputElement) {
         if (!file) return;
         await stopQrScanner();
         if (!prepareQrScanner()) return;
@@ -501,8 +510,17 @@ document.addEventListener('DOMContentLoaded', () => {
             setQrStatus('사진에서 QR을 찾지 못했습니다. QR 부분이 크게 보이도록 다시 촬영해 주세요.', true);
             await stopQrScanner();
         } finally {
-            qrFileInput.value = '';
+            inputElement.value = '';
         }
+    }
+
+    qrCameraInput?.addEventListener('change', async event => {
+        await scanQrImageFile(event.target.files?.[0], qrCameraInput);
+    });
+
+    qrFileInput?.addEventListener('change', async event => {
+        const file = event.target.files?.[0];
+        await scanQrImageFile(file, qrFileInput);
     });
 
     btnCloseQr?.addEventListener('click', closeQrScanner);
