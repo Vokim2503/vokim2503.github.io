@@ -84,12 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const actionBtn = document.getElementById('stage1-action');
         const btnToCatch = document.getElementById('btn-to-catch');
 
-        // 자동 스크롤 함수 (모바일 브라우저 환경에서 더 확실하게 화면을 끌어올림)
+        // 자동 스크롤 함수 (표준 문서 레이아웃으로 변경되었으므로 전체 문서 스크롤 적용)
         function scrollToBottom() {
             const terminal = document.getElementById('integrated-terminal');
             const actionBtn = document.getElementById('stage1-action');
             
-            // 만약 하단 메뉴(버튼)가 보인다면 버튼을 화면에 맞추고, 아니면 터미널 창의 끝부분을 맞춤
             if (actionBtn && actionBtn.style.display === 'block') {
                 actionBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
             } else if (terminal) {
