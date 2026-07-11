@@ -185,6 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const autoGamesEl = document.getElementById('auto-games');
     const btnAutoRegenerate = document.getElementById('btn-auto-regenerate');
     const btnAutoCopy = document.getElementById('btn-auto-copy');
+    const btnAutoCompare = document.getElementById('btn-auto-compare');
+    const latestLottoResult = { round: 1231, date: '2026-07-04', numbers: [4, 13, 14, 18, 31, 38], bonus: 15 };
     let selectedNumbers = [];
     let orbs = [];
     let currentNumberPage = 0;
@@ -323,6 +325,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 autoAnimationTimers.push(setTimeout(() => { ball.classList.add('show'); }, revealDelay));
             });
             row.appendChild(balls);
+            const comparison = document.createElement('div');
+            comparison.className = 'auto-game-result';
+            comparison.setAttribute('aria-live', 'polite');
+            row.appendChild(comparison);
             autoGamesEl.appendChild(row);
         });
     }
@@ -332,6 +338,26 @@ document.addEventListener('DOMContentLoaded', () => {
     btnViewBlind?.addEventListener('click', () => setManualView('blind'));
     btnViewNumber?.addEventListener('click', () => setManualView('number'));
     btnAutoRegenerate?.addEventListener('click', generateAutoGames);
+    btnAutoCompare?.addEventListener('click', compareAutoGames);
+    function compareAutoGames() {
+        const resultEls = autoGamesEl?.querySelectorAll('.auto-game-result') || [];
+        currentAutoGames.forEach((game, index) => {
+            const matches = game.filter(num => latestLottoResult.numbers.includes(num)).length;
+            const hasBonus = game.includes(latestLottoResult.bonus);
+            let resultText = `${matches}개 일치`;
+            let resultClass = 'no-prize';
+            if (matches === 6) { resultText = '1등'; resultClass = 'prize'; }
+            else if (matches === 5 && hasBonus) { resultText = '2등'; resultClass = 'prize'; }
+            else if (matches === 5) { resultText = '3등'; resultClass = 'prize'; }
+            else if (matches === 4) { resultText = '4등'; resultClass = 'prize'; }
+            else if (matches === 3) { resultText = '5등'; resultClass = 'prize'; }
+            if (resultEls[index]) {
+                resultEls[index].textContent = `${latestLottoResult.round}회 기준 · ${resultText}${hasBonus && matches < 5 ? ' · 보너스 포함' : ''}`;
+                resultEls[index].className = `auto-game-result ${resultClass}`;
+            }
+        });
+    }
+
     btnAutoCopy?.addEventListener('click', () => {
         const text = currentAutoGames.map((game, index) => `${index + 1}게임: ${game.join(', ')}`).join('\n');
         navigator.clipboard.writeText(text).then(() => {
