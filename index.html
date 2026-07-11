@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이슈 로또 - 뉴스와 시간으로 만드는 오락용 번호 생성기</title>
     <meta name="description" content="뉴스 제목과 버튼을 누른 시간을 조합해 1~45 범위의 무작위 번호를 만드는 오락용 로또 번호 생성기입니다.">
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=26">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     
     <!-- SEO & 바이럴 최적화 (카카오톡, 페이스북 공유 시 예쁘게 나오도록 설정) -->
@@ -90,6 +90,12 @@
                     <span class="bonus-plus">+</span><span class="winning-ball bonus">15</span>
                 </div>
                 <p class="result-caution">당첨 확인은 보조 기능입니다. 반드시 실물 복권과 동행복권 공식 결과를 함께 확인하세요.</p>
+            </section>
+
+
+            <section class="qr-check-card" aria-label="복권 QR 당첨 확인">
+                <div><span class="latest-badge">실물 복권 확인</span><h2>QR 코드로 당첨 확인</h2><p>카메라 또는 저장된 사진으로 복권 QR을 읽고 동행복권 공식 결과를 확인합니다.</p></div>
+                <button id="btn-open-qr" class="btn primary" type="button">QR 당첨 확인</button>
             </section>
 
             <div id="service-info" class="service-info">
@@ -202,6 +208,18 @@
             <span>© 2026 로또 생성기. All rights reserved.</span>
         </footer>
 
+
+        <div id="qr-modal" class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+            <div class="qr-modal-content">
+                <h2 id="qr-modal-title">QR 당첨 확인</h2>
+                <p class="qr-permission-guide">아래에서 카메라 또는 사진을 선택하세요. QR 영상과 사진은 이 사이트의 서버에 저장하거나 전송하지 않으며 브라우저 안에서만 판독합니다.</p>
+                <div id="qr-reader"></div>
+                <div id="qr-status" class="qr-status" aria-live="polite"></div>
+                <button id="btn-open-qr-result" class="btn primary" type="button" style="display:none; width:100%;">동행복권 공식 결과 열기</button>
+                <button id="btn-close-qr" class="btn secondary" type="button" style="width:100%; margin-top:10px;">닫기</button>
+            </div>
+        </div>
+
         <!-- 개인정보처리방침 모달 -->
         <div id="privacy-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
             <div style="background: #1e1e24; padding: 20px; border-radius: 10px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; color: #ddd; border: 1px solid var(--primary-glow);">
@@ -212,6 +230,8 @@
                 <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">Google과 파트너는 사용자의 본 사이트 또는 다른 웹사이트 방문 기록을 바탕으로 광고를 제공할 수 있습니다. 사용자는 <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 광고 설정</a>에서 맞춤 광고를 관리하거나 사용 중지할 수 있으며, 브라우저 설정에서 쿠키를 삭제하거나 차단할 수 있습니다.</p>
                 <h3 style="color:#fff; margin:16px 0 8px;">외부 링크</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">뉴스, YouTube, GitHub 등 외부 사이트에는 해당 사업자의 개인정보처리방침이 적용됩니다. 자세한 내용은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 개인정보처리방침</a>을 확인해 주세요.</p>
+                <h3 style="color:#fff; margin:16px 0 8px;">QR 카메라 및 사진</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">QR 당첨 확인 기능은 사용자가 직접 선택한 경우에만 카메라 또는 사진 접근 권한을 요청합니다. 촬영 영상과 선택한 사진은 본 사이트의 서버에 저장하거나 전송하지 않고 브라우저 안에서 QR 판독에만 사용합니다.</p>
                 <p style="font-size: 0.8rem; color:#888; margin-top:15px;">최종 업데이트: 2026년 7월 11일</p>
                 <button id="btn-close-privacy" class="btn primary" style="width: 100%; margin-top: 20px;">닫기</button>
             </div>
@@ -227,7 +247,8 @@
             document.getElementById('privacy-modal').style.display = 'none';
         });
     </script>
-    <script src="main.js?v=25"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script>
+    <script src="main.js?v=26"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
