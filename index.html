@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이슈 로또 - 오늘의 뉴스가 빚어낸 행운의 번호</title>
-    <meta name="description" content="실시간 뉴스 이슈 데이터와 접속 시간의 엔트로피를 과학적으로 연산하여, 세상에 단 하나뿐인 당신만의 고유한 행운 번호를 추출합니다.">
-    <link rel="stylesheet" href="style.css?v=23">
+    <title>이슈 로또 - 뉴스와 시간으로 만드는 오락용 번호 생성기</title>
+    <meta name="description" content="뉴스 제목과 버튼을 누른 시간을 조합해 1~45 범위의 무작위 번호를 만드는 오락용 로또 번호 생성기입니다.">
+    <link rel="stylesheet" href="style.css?v=24">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     
     <!-- SEO & 바이럴 최적화 (카카오톡, 페이스북 공유 시 예쁘게 나오도록 설정) -->
     <meta property="og:title" content="이슈 로또 - 오늘의 뉴스가 빚어낸 행운의 번호">
-    <meta property="og:description" content="세상에 단 하나뿐인 당신만의 고유한 행운 번호를 과학적으로 추출해 드립니다. 지금 바로 확인해보세요!">
+    <meta property="og:description" content="뉴스와 현재 시간을 조합한 난수로 오락용 로또 번호를 만들어보세요. 당첨을 예측하거나 보장하지 않습니다.">
     <meta property="og:image" content="https://vokim2503.github.io/icon-512.png">
     <meta property="og:url" content="https://vokim2503.github.io/">
     <meta property="og:type" content="website">
@@ -57,7 +57,7 @@
                     기사를 모두 읽으셨다면, 아래 버튼을 눌러주세요.<br>
                     기사의 고유 데이터와 현재 시간을 결합하여 나만의 난수를 생성합니다.
                 </p>
-                <button id="btn-start-calc" class="btn primary" style="font-size: 1.1rem; padding: 1rem 1.5rem; width: 100%;">이 이슈의 기운으로 난수 생성하기</button>
+                <button id="btn-start-calc" class="btn primary" style="font-size: 1.1rem; padding: 1rem 1.5rem; width: 100%;">이 이슈 데이터로 난수 생성하기</button>
             </div>
             
             <!-- 통합된 터미널 연산 UI (기본 숨김) -->
@@ -74,10 +74,30 @@
                 </div>
                 
                 <div class="action-buttons" id="stage1-action" style="display:none; margin-top: 1.5rem;">
-                    <button id="btn-to-catch" class="btn primary" style="width: 100%; box-shadow: 0 0 15px var(--primary-glow);">이 고유 난수로 행운 번호 뽑기!</button>
+                    <button id="btn-to-catch" class="btn primary" style="width: 100%; box-shadow: 0 0 15px var(--primary-glow);">이 고유 난수로 번호 만들기</button>
                 </div>
             </div>
             
+
+            <div id="service-info" class="service-info">
+                <article class="info-card">
+                    <h2>서비스 소개</h2>
+                    <p>이슈 로또는 뉴스 제목과 사용자가 버튼을 누른 시간을 조합해 1부터 45까지의 번호를 만드는 오락용 무작위 번호 생성기입니다. 실제 복권 추첨 결과를 예측하거나 당첨 가능성을 높이는 서비스가 아닙니다.</p>
+                </article>
+                <article class="info-card">
+                    <h2>번호 생성 원리</h2>
+                    <p>선택된 뉴스 제목의 문자 정보와 클릭 시각을 숫자값으로 변환해 초기 난수값을 만들고, 이 값으로 1~45의 순서를 섞습니다. 수동 모드는 섞인 번호에서 직접 선택하며, 자동 모드는 같은 초기값을 바탕으로 게임당 중복 없는 6개 번호를 생성합니다.</p>
+                </article>
+                <article class="info-card">
+                    <h2>이용 안내 및 책임 제한</h2>
+                    <p>본 서비스는 복권 판매, 구매, 베팅 또는 금융 거래를 제공하지 않습니다. 생성 결과는 재미와 참고 목적으로만 이용해 주세요. 공식 추첨 결과와 복권 관련 정보는 동행복권 등 공식 기관에서 확인하시기 바랍니다.</p>
+                </article>
+                <article class="info-card">
+                    <h2>운영자 및 문의</h2>
+                    <p>본 서비스는 행복칠TV가 운영합니다. 서비스 관련 문의와 오류 제보는 <a href="https://github.com/Vokim2503" target="_blank" rel="noopener noreferrer">운영자 GitHub 페이지</a>를 이용해 주세요.</p>
+                </article>
+            </div>
+
             <!-- 애드센스 (메인화면 하단) -->
             <div class="ad-placeholder mt-auto">
                 <p>Google AdSense</p>
@@ -164,7 +184,7 @@
 
         <!-- 하단 법적 고지 (애드센스 승인 필수 요소) -->
         <footer style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding-bottom: 1rem; font-size: 0.8rem; color: #666; z-index: 10;">
-            <a href="#" id="btn-privacy" style="color: #888; text-decoration: underline;">개인정보처리방침</a> | 
+            <a href="#" id="btn-privacy" style="color: #888; text-decoration: underline;">개인정보처리방침</a> | <a href="#service-info" style="color: #888; text-decoration: underline;">서비스 안내</a> | 
             <span>© 2026 로또 생성기. All rights reserved.</span>
         </footer>
 
@@ -172,8 +192,13 @@
         <div id="privacy-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
             <div style="background: #1e1e24; padding: 20px; border-radius: 10px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; color: #ddd; border: 1px solid var(--primary-glow);">
                 <h2 style="color: #fff; margin-bottom: 15px;">개인정보처리방침</h2>
-                <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px;">본 사이트는 사용자의 개인정보를 수집, 저장 또는 처리하지 않습니다.</p>
-                <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px;">단, 구글 애드센스(Google AdSense)와 같은 제3자 광고 사업자가 맞춤형 광고를 제공하기 위해 쿠키(Cookie)를 사용할 수 있습니다. 사용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있습니다.</p>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">본 사이트는 이름, 이메일 주소와 같은 개인정보를 직접 입력받거나 회원정보로 저장하지 않습니다.</p>
+                <h3 style="color:#fff; margin:16px 0 8px;">Google 서비스 및 쿠키</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">본 사이트는 방문 통계 분석을 위해 Google Analytics를, 광고 제공을 위해 Google AdSense를 사용합니다. Google 및 제3자 광고 사업자는 쿠키 또는 유사한 식별자를 사용해 방문 기록, 브라우저·기기 정보, 대략적인 위치, 광고 노출 및 이용 정보를 처리할 수 있습니다.</p>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">Google과 파트너는 사용자의 본 사이트 또는 다른 웹사이트 방문 기록을 바탕으로 광고를 제공할 수 있습니다. 사용자는 <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 광고 설정</a>에서 맞춤 광고를 관리하거나 사용 중지할 수 있으며, 브라우저 설정에서 쿠키를 삭제하거나 차단할 수 있습니다.</p>
+                <h3 style="color:#fff; margin:16px 0 8px;">외부 링크</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">뉴스, YouTube, GitHub 등 외부 사이트에는 해당 사업자의 개인정보처리방침이 적용됩니다. 자세한 내용은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 개인정보처리방침</a>을 확인해 주세요.</p>
+                <p style="font-size: 0.8rem; color:#888; margin-top:15px;">최종 업데이트: 2026년 7월 11일</p>
                 <button id="btn-close-privacy" class="btn primary" style="width: 100%; margin-top: 20px;">닫기</button>
             </div>
         </div>
@@ -188,7 +213,7 @@
             document.getElementById('privacy-modal').style.display = 'none';
         });
     </script>
-    <script src="main.js?v=23"></script>
+    <script src="main.js?v=24"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
