@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v5'; // 아이폰에 최신 애니메이션 파일 강제 업데이트
+const CACHE_NAME = 'lotto-cache-v6'; // 아이폰 터치 수정 파일 강제 업데이트
 const urlsToCache = [
   './',
   './index.html',
