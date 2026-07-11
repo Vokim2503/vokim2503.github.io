@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v6'; // 아이폰 터치 수정 파일 강제 업데이트
+const CACHE_NAME = 'lotto-cache-v7'; // 1~45 전체 선택 화면 강제 업데이트
 const urlsToCache = [
   './',
   './index.html',
