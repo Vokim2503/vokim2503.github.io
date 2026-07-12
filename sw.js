@@ -1,10 +1,12 @@
-const CACHE_NAME = 'lotto-cache-v22'; // 애드센스 심사용 안정판
+const CACHE_NAME = 'lotto-cache-v23'; // 애드센스 심사용 콘텐츠·탐색 안정판
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
   './main.js',
-  './manifest.json'
+  './manifest.json',
+  './guide.html',
+  './privacy.html'
 ];
 
 self.addEventListener('install', event => {
@@ -37,13 +39,13 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const requestUrl = new URL(event.request.url);
-  // 뉴스·광고 등 외부 요청은 서비스워커가 가로채지 않는다.
+  // 광고·통계·웹폰트 등 외부 요청은 서비스워커가 가로채지 않는다.
   if (requestUrl.origin !== self.location.origin) return;
 
   // 같은 사이트 파일만 네트워크 우선으로 받고, 오프라인일 때 캐시를 사용한다.
   event.respondWith(
     fetch(event.request).catch(() => {
-      return caches.match(event.request);
+      return caches.match(event.request, { ignoreSearch: true });
     })
   );
 });

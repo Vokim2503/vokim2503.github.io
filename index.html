@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이슈 로또 - 뉴스와 시간으로 만드는 오락용 번호 생성기</title>
-    <meta name="description" content="뉴스 제목과 버튼을 누른 시간을 조합해 1~45 범위의 무작위 번호를 만드는 오락용 로또 번호 생성기입니다.">
-    <link rel="stylesheet" href="style.css?v=34">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
-    
-    <!-- SEO & 바이럴 최적화 (카카오톡, 페이스북 공유 시 예쁘게 나오도록 설정) -->
-    <meta property="og:title" content="이슈 로또 - 오늘의 뉴스가 빚어낸 행운의 번호">
-    <meta property="og:description" content="뉴스와 현재 시간을 조합한 난수로 오락용 로또 번호를 만들어보세요. 당첨을 예측하거나 보장하지 않습니다.">
+    <title>이슈 로또 - 오늘의 주제와 시간으로 만드는 오락용 번호 생성기</title>
+    <meta name="description" content="오늘의 주제와 버튼을 누른 시간을 조합해 1~45 범위의 무작위 번호를 만드는 오락용 로또 번호 생성기입니다.">
+    <link rel="canonical" href="https://vokim2503.github.io/">
+    <meta name="robots" content="index, follow">
+    <meta name="google-adsense-account" content="ca-pub-5598414628909120">
+    <link rel="stylesheet" href="style.css?v=35">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&amp;family=Noto+Sans+KR:wght@300;500;700&amp;display=swap" rel="stylesheet">
+
+    <meta property="og:title" content="이슈 로또 - 오락용 무작위 번호 생성기">
+    <meta property="og:description" content="오늘의 주제와 클릭 시각을 조합한 무작위 번호를 만들어보세요. 당첨을 예측하거나 보장하지 않습니다.">
     <meta property="og:image" content="https://vokim2503.github.io/icon-512.png">
     <meta property="og:url" content="https://vokim2503.github.io/">
     <meta property="og:type" content="website">
 
-    <!-- PWA (스마트폰 앱 설치 기능) 지원 -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a1a20">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <!-- 구글 서치 콘솔 (검색 노출용) : 애널리틱스를 통해 자동 소유권 인증 완료 -->
-
-    <!-- 구글 애널리틱스 (방문자 분석 CCTV) -->
+    <!-- 익명 방문 통계 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E5ZKLTHN"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -31,234 +30,173 @@
       gtag('config', 'G-P1E5ZKLTHN');
     </script>
 
-    <!-- 구글 애드센스 기본 스크립트 (클라이언트 ID 교체 완료) -->
+    <!-- AdSense 사이트 연결 코드: 승인 전에는 빈 광고 자리를 표시하지 않음 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5598414628909120" crossorigin="anonymous"></script>
 </head>
 <body class="theme-default">
     <div id="app">
-        <!-- 0단계: 테마(성향) 선택 화면 (하이브리드: 실시간 트렌드 + MBTI) -->
-        <section id="stage-0" class="stage active">
-            <!-- 제작자 브랜딩 (구독자용 소속감 부여) -->
-            <div style="text-align: center; margin-bottom: 1rem; color: var(--primary-color); font-size: 0.9rem; font-weight: 500; opacity: 0.9;">
-                🎁 Presented by 행복칠TV
-            </div>
-            
-            <!-- 상단: 실시간 뉴스 이슈 영역 -->
-            <div class="trend-container">
-                <p class="trend-label">🗞️ 오늘의 주요 뉴스 (대구매일신문)</p>
-                <h1 class="title trend-keyword" id="live-trend-keyword" style="font-size: 1.5rem; word-break: keep-all; line-height: 1.3;">오늘의 긍정적인 파동</h1>
-                <p class="subtitle trend-desc">뉴스 연결이 늦어도 바로 번호 만들기를 시작할 수 있습니다.</p>
-            </div>
-            
-            <hr class="divider">
+        <header class="site-header">
+            <a class="site-brand" href="./" aria-label="이슈 로또 홈으로">이슈 로또</a>
+            <nav class="site-nav" aria-label="주요 메뉴">
+                <a href="./" aria-current="page">홈</a>
+                <a href="guide.html">이용안내</a>
+                <a href="privacy.html">개인정보</a>
+            </nav>
+        </header>
 
-            <div class="action-container" id="calc-action-container" style="text-align: center; margin-top: 2rem;">
-                <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">
-                    기사를 모두 읽으셨다면, 아래 버튼을 눌러주세요.<br>
-                    기사의 고유 데이터와 현재 시간을 결합하여 나만의 난수를 생성합니다.
-                </p>
-                <button id="btn-start-calc" class="btn primary" style="font-size: 1.1rem; padding: 1rem 1.5rem; width: 100%;">이 이슈 데이터로 난수 생성하기</button>
-            </div>
-            
-            <!-- 통합된 터미널 연산 UI (기본 숨김) -->
-            <div id="integrated-terminal" style="display: none; margin-top: 1.5rem;">
-                <p class="subtitle" style="margin-bottom: 0.5rem;">세상의 이슈와 귀하의 시간이 수학적으로 결합됩니다.</p>
-                <div class="terminal-container" id="terminal-ui" style="margin-top: 0;">
-                    <div class="term-line">> 이슈 데이터 스캔 중...</div>
-                    <div class="term-line" id="term-news-title" style="display:none; color: var(--primary-color);"></div>
-                    <div class="term-line" id="term-news-length" style="display:none;"></div>
-                    <div class="term-line" id="term-time-sync" style="display:none;">> 접속자 클릭 시간 동기화 중...</div>
-                    <div class="term-line" id="term-click-time" style="display:none; color: var(--accent-color);"></div>
-                    <div class="term-line" id="term-calc-start" style="display:none;">> [문자열 엔트로피 × 시간] 연산 중...</div>
-                    <div class="term-line highlight-text" id="term-final-seed" style="display:none; margin-top: 10px; font-size: 1.1rem; color: #00ffcc;"></div>
-                </div>
-                
-                <div class="action-buttons" id="stage1-action" style="display:none; margin-top: 1.5rem;">
-                    <button id="btn-to-catch" class="btn primary" style="width: 100%; box-shadow: 0 0 15px var(--primary-glow);">이 고유 난수로 번호 만들기</button>
-                </div>
-            </div>
-            
+        <main>
+            <section id="stage-0" class="stage active">
+                <div class="presented-by">🎁 Presented by 행복칠TV</div>
 
-
-            <section class="latest-result-card" aria-label="최신 로또 당첨번호">
-                <div class="latest-result-head">
-                    <div><span class="latest-badge">최신 완료 회차</span><h2>제1232회 당첨번호</h2><p>2026년 7월 11일 추첨</p></div>
-                    <a href="https://www.dhlottery.co.kr/lt645/result">공식 결과 확인</a>
-                </div>
-                <div class="latest-winning-balls">
-                    <span class="winning-ball blue">12</span><span class="winning-ball blue">15</span><span class="winning-ball blue">19</span><span class="winning-ball red">22</span><span class="winning-ball red">24</span><span class="winning-ball gray">36</span>
-                    <span class="bonus-plus">+</span><span class="winning-ball bonus">3</span>
-                </div>
-                <p class="result-caution">당첨 확인은 보조 기능입니다. 반드시 실물 복권과 동행복권 공식 결과를 함께 확인하세요.</p>
-            </section>
-
-
-            <!-- 애드센스 심사 중에는 아이폰 판독이 불안정한 QR 시험 기능을 공개하지 않음. 개발 코드는 보존. -->
-            <section class="qr-check-card" aria-label="복권 QR 당첨 확인" hidden>
-                <div><span class="latest-badge">실물 복권 확인</span><h2>QR 코드로 당첨 확인</h2><p>카메라 또는 저장된 사진으로 복권 QR을 읽고 동행복권 공식 결과를 확인합니다.</p></div>
-                <button id="btn-open-qr" class="btn primary" type="button">QR 당첨 확인</button>
-            </section>
-
-            <div id="service-info" class="service-info">
-                <article class="info-card">
-                    <h2>서비스 소개</h2>
-                    <p>이슈 로또는 뉴스 제목과 사용자가 버튼을 누른 시간을 조합해 1부터 45까지의 번호를 만드는 오락용 무작위 번호 생성기입니다. 실제 복권 추첨 결과를 예측하거나 당첨 가능성을 높이는 서비스가 아닙니다.</p>
-                </article>
-                <article class="info-card">
-                    <h2>번호 생성 원리</h2>
-                    <p>선택된 뉴스 제목의 문자 정보와 클릭 시각을 숫자값으로 변환해 초기 난수값을 만들고, 이 값으로 1~45의 순서를 섞습니다. 수동 모드는 섞인 번호에서 직접 선택하며, 자동 모드는 같은 초기값을 바탕으로 게임당 중복 없는 6개 번호를 생성합니다.</p>
-                </article>
-                <article class="info-card">
-                    <h2>이용 안내 및 책임 제한</h2>
-                    <p>본 서비스는 복권 판매, 구매, 베팅 또는 금융 거래를 제공하지 않습니다. 생성 결과는 재미와 참고 목적으로만 이용해 주세요. 공식 추첨 결과와 복권 관련 정보는 동행복권 등 공식 기관에서 확인하시기 바랍니다.</p>
-                </article>
-                <article class="info-card">
-                    <h2>운영자 및 문의</h2>
-                    <p>본 서비스는 행복칠TV가 운영합니다. 서비스 관련 문의와 오류 제보는 <a href="https://github.com/Vokim2503" target="_blank" rel="noopener noreferrer">운영자 GitHub 페이지</a>를 이용해 주세요.</p>
-                </article>
-            </div>
-
-            <!-- 애드센스 (메인화면 하단) -->
-            <div class="ad-placeholder mt-auto">
-                <p>Google AdSense</p>
-            </div>
-        </section>
-
-
-
-        <!-- 2, 3단계: 후보군 생성 및 번호 선택 화면 -->
-        <section id="stage-2" class="stage">
-            <h1 class="title">직관의 시간</h1>
-            <p class="subtitle">난수가 섞은 1~45 번호에서 원하는 방식을 선택하세요.</p>
-
-            <div class="selection-mode-tabs" role="tablist" aria-label="번호 생성 방식">
-                <button id="btn-mode-manual" class="mode-tab active" type="button">수동 선택</button>
-                <button id="btn-mode-auto" class="mode-tab" type="button">자동 5게임</button>
-            </div>
-
-            <div id="manual-selection-panel" class="selection-panel active">
-                <div class="manual-view-toggle">
-                    <button id="btn-view-blind" class="view-toggle active" type="button">직관 모드 · 숫자 숨김</button>
-                    <button id="btn-view-number" class="view-toggle" type="button">번호 모드 · 숫자 표시</button>
+                <div class="trend-container">
+                    <p class="trend-label">오늘의 번호 주제</p>
+                    <h1 class="title trend-keyword" id="live-trend-keyword">오늘의 작은 발견</h1>
+                    <p class="subtitle trend-desc">운영자가 확인한 중립적인 주제를 번호 생성의 재료로 사용합니다.</p>
                 </div>
 
-                <div class="number-page-guide">
-                    <button id="btn-page-prev" class="page-nav-btn" aria-label="이전 번호 페이지">‹</button>
-                    <span id="number-page-indicator">1 / 3</span>
-                    <button id="btn-page-next" class="page-nav-btn" aria-label="다음 번호 페이지">›</button>
+                <hr class="divider">
+
+                <div class="action-container" id="calc-action-container">
+                    <p>
+                        오늘의 주제를 확인한 뒤 아래 버튼을 눌러주세요.<br>
+                        주제의 문자 정보와 클릭 시각을 조합해 오락용 무작위 번호를 만듭니다.
+                    </p>
+                    <button id="btn-start-calc" class="btn primary" type="button">이 주제 데이터로 난수 생성하기</button>
                 </div>
-                <div id="orb-field" class="blind-view" aria-label="1부터 45까지 번호 선택"></div>
 
-                <div class="selection-slots">
-                    <div class="slot" data-index="0"></div>
-                    <div class="slot" data-index="1"></div>
-                    <div class="slot" data-index="2"></div>
-                    <div class="slot" data-index="3"></div>
-                    <div class="slot" data-index="4"></div>
-                    <div class="slot" data-index="5"></div>
-                </div>
-            </div>
-
-            <div id="auto-selection-panel" class="selection-panel">
-                <p class="auto-description">처음 생성된 고유 난수로 5게임을 자동 추첨합니다.</p>
-                <div id="auto-games"></div>
-                <div class="auto-actions">
-                    <button id="btn-auto-regenerate" class="btn secondary" type="button">5게임 다시 생성</button>
-                    <button id="btn-auto-copy" class="btn primary" type="button">전체 복사</button>
-                    <button id="btn-auto-compare" class="btn compare-btn" type="button">1232회와 비교</button>
-                </div>
-            </div>
-
-            <p class="lotto-disclaimer">본 서비스는 오락용 무작위 번호 생성기이며 당첨을 보장하지 않습니다.</p>
-        </section>
-
-        <!-- 4단계: 최종 결과 화면 -->
-        <section id="stage-3" class="stage">
-            <h1 class="title glow-text-intense">당신의 로또 번호</h1>
-            <p class="subtitle" id="result-message">행운이 함께하시길 바랍니다.</p>
-            
-            <div class="result-container" id="result-numbers">
-            </div>
-            
-            <div class="action-buttons">
-                <button id="btn-copy" class="btn primary">번호 복사하기</button>
-                <button id="btn-retry" class="btn secondary">처음으로</button>
-            </div>
-            
-            <!-- 유튜브 자동화 배너 -->
-            <div id="youtube-promo-container" style="display: none; margin-top: 2rem; background: #1a1a20; border: 1px solid var(--primary-glow); border-radius: 12px; padding: 1rem; text-align: left; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);">
-                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">🎁 오늘 당첨의 기운을 더 높이려면?</p>
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <img id="yt-thumb" src="" alt="YouTube Thumbnail" style="width: 120px; height: 68px; object-fit: cover; border-radius: 8px; border: 1px solid #333;">
-                    <div style="flex: 1;">
-                        <h3 id="yt-title" style="font-size: 0.95rem; color: #fff; margin: 0 0 0.4rem 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">유튜브 영상 불러오는 중...</h3>
-                        <span style="font-size: 0.8rem; color: #ff0000; font-weight: 500;">▶ YouTube에서 보기</span>
+                <div id="integrated-terminal" class="integrated-terminal" style="display:none;">
+                    <p class="subtitle terminal-intro">주제의 문자 값과 클릭 시각을 계산해 초기 난수값을 만듭니다.</p>
+                    <div class="terminal-container" id="terminal-ui">
+                        <div class="term-line">&gt; 주제 데이터 확인 중...</div>
+                        <div class="term-line" id="term-news-title" style="display:none;"></div>
+                        <div class="term-line" id="term-news-length" style="display:none;"></div>
+                        <div class="term-line" id="term-time-sync" style="display:none;">&gt; 클릭 시각 확인 중...</div>
+                        <div class="term-line" id="term-click-time" style="display:none;"></div>
+                        <div class="term-line" id="term-calc-start" style="display:none;">&gt; 문자 값과 시각 조합 중...</div>
+                        <div class="term-line highlight-text" id="term-final-seed" style="display:none;"></div>
+                    </div>
+                    <div class="action-buttons" id="stage1-action" style="display:none;">
+                        <button id="btn-to-catch" class="btn primary" type="button">이 난수로 번호 만들기</button>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 애드센스 -->
-            <div class="ad-placeholder">
-                <p>Google AdSense</p>
-            </div>
-        </section>
 
-        <!-- 하단 법적 고지 (애드센스 승인 필수 요소) -->
-        <footer style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding-bottom: 1rem; font-size: 0.8rem; color: #666; z-index: 10;">
-            <a href="#" id="btn-privacy" style="color: #888; text-decoration: underline;">개인정보처리방침</a> | <a href="#service-info" style="color: #888; text-decoration: underline;">서비스 안내</a> | 
-            <span>© 2026 로또 생성기. All rights reserved.</span>
-        </footer>
+                <section class="latest-result-card" aria-label="로또 당첨번호 비교 기준">
+                    <div class="latest-result-head">
+                        <div><span class="latest-badge">현재 비교 기준</span><h2>제1232회 당첨번호</h2><p>2026년 7월 11일 추첨</p></div>
+                        <a href="https://www.dhlottery.co.kr/lt645/result" target="_blank" rel="noopener noreferrer">공식 결과 확인</a>
+                    </div>
+                    <div class="latest-winning-balls" aria-label="당첨번호 12, 15, 19, 22, 24, 36, 보너스 3">
+                        <span class="winning-ball blue">12</span><span class="winning-ball blue">15</span><span class="winning-ball blue">19</span><span class="winning-ball red">22</span><span class="winning-ball red">24</span><span class="winning-ball gray">36</span>
+                        <span class="bonus-plus">+</span><span class="winning-ball bonus">3</span>
+                    </div>
+                    <p class="result-caution">당첨 확인은 보조 기능입니다. 반드시 실물 복권과 동행복권 공식 결과를 함께 확인하세요.</p>
+                </section>
 
-
-        <div id="qr-modal" class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title" hidden>
-            <div class="qr-modal-content">
-                <h2 id="qr-modal-title">QR 당첨 확인</h2>
-                <p class="qr-permission-guide">아래에서 카메라 또는 사진을 선택하세요. QR 영상과 사진은 이 사이트의 서버에 저장하거나 전송하지 않으며 브라우저 안에서만 판독합니다.</p>
-                <div class="qr-source-actions">
-                    <button id="btn-qr-camera" class="btn primary" type="button">카메라로 확인</button>
-                    <label class="btn secondary qr-file-label" for="qr-file-input">사진으로 확인</label>
-                    <input id="qr-camera-input" type="file" accept="image/*" capture="environment" hidden>
-                    <input id="qr-file-input" type="file" accept="image/*" hidden>
+                <div id="service-info" class="service-info">
+                    <article class="info-card">
+                        <h2>서비스 소개</h2>
+                        <p>이슈 로또는 오늘의 중립적인 주제와 사용자가 버튼을 누른 시각을 조합해 1부터 45까지의 번호를 만드는 오락용 무작위 번호 생성기입니다. 실제 복권 추첨 결과를 예측하거나 당첨 가능성을 높이는 서비스가 아닙니다.</p>
+                    </article>
+                    <article class="info-card">
+                        <h2>번호 생성 원리</h2>
+                        <p>현재 버전은 주제의 문자 정보와 클릭 시각을 숫자값으로 조합해 초기값을 만듭니다. 그 값을 바탕으로 1~45의 순서를 섞고, 중복 없는 6개 번호를 선택하도록 구성했습니다. 이는 암호학적 보안 난수나 당첨 예측 모델이 아닌 오락용 의사난수 방식입니다.</p>
+                    </article>
+                    <article class="info-card">
+                        <h2>처음 이용하는 방법</h2>
+                        <ol>
+                            <li>오늘의 주제를 확인하고 난수 생성 버튼을 누릅니다.</li>
+                            <li>수동 선택 또는 자동 5게임 중 원하는 방식을 고릅니다.</li>
+                            <li>생성된 번호를 복사하거나 최신 공식 당첨번호와 비교합니다.</li>
+                        </ol>
+                        <p class="card-link"><a href="guide.html">자세한 이용방법과 자주 묻는 질문 보기</a></p>
+                    </article>
+                    <article class="info-card">
+                        <h2>수동과 자동의 차이</h2>
+                        <p>수동 모드에서는 1~45 전체를 세 페이지로 넘겨보며 6개를 직접 고릅니다. 자동 5게임은 게임당 6개를 중복 없이 만듭니다. 두 방식 모두 오락용이며 어느 방식도 당첨 확률을 높이지 않습니다.</p>
+                    </article>
+                    <article class="info-card">
+                        <h2>이용 안내 및 책임 제한</h2>
+                        <p>본 서비스는 복권 판매, 구매, 베팅 또는 금융 거래를 제공하지 않습니다. 생성 결과는 재미와 참고 목적으로만 이용해 주세요. 복권 구매를 선택한다면 무리하지 않는 범위를 정하고, 공식 추첨 결과는 동행복권에서 확인하세요.</p>
+                    </article>
+                    <article class="info-card">
+                        <h2>자주 묻는 질문</h2>
+                        <h3>오늘의 주제는 번호와 어떤 관계가 있나요?</h3>
+                        <p>주제의 문자 정보를 초기값을 만드는 재료 중 하나로만 사용합니다. 주제 내용이 미래 당첨 결과에 영향을 준다는 뜻은 아닙니다.</p>
+                        <h3>생성된 번호가 당첨을 예측하나요?</h3>
+                        <p>아닙니다. 과거 당첨 데이터를 학습하거나 미래 결과를 예측하지 않으며, 생성 방식은 당첨 가능성을 바꾸지 않습니다.</p>
+                    </article>
+                    <article class="info-card">
+                        <h2>운영자 및 문의</h2>
+                        <p>본 서비스는 행복칠TV가 운영합니다. 서비스 관련 문의와 오류 제보는 <a href="https://github.com/Vokim2503" target="_blank" rel="noopener noreferrer">운영자 GitHub 페이지</a>를 이용해 주세요.</p>
+                    </article>
                 </div>
-                <div id="qr-reader" aria-label="QR 카메라 화면"></div>
-                <div id="qr-status" class="qr-status" aria-live="polite"></div>
-                <div id="qr-ticket-result" class="qr-ticket-result" aria-live="polite"></div>
-                <button id="btn-open-qr-result" class="btn primary" type="button" style="display:none; width:100%;">동행복권 공식 결과 열기</button>
-                <button id="btn-close-qr" class="btn secondary" type="button" style="width:100%; margin-top:10px;">닫기</button>
-            </div>
-        </div>
+            </section>
 
-        <!-- 개인정보처리방침 모달 -->
-        <div id="privacy-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div style="background: #1e1e24; padding: 20px; border-radius: 10px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; color: #ddd; border: 1px solid var(--primary-glow);">
-                <h2 style="color: #fff; margin-bottom: 15px;">개인정보처리방침</h2>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">본 사이트는 이름, 이메일 주소와 같은 개인정보를 직접 입력받거나 회원정보로 저장하지 않습니다.</p>
-                <h3 style="color:#fff; margin:16px 0 8px;">Google 서비스 및 쿠키</h3>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">본 사이트는 방문 통계 분석을 위해 Google Analytics를, 광고 제공을 위해 Google AdSense를 사용합니다. Google 및 제3자 광고 사업자는 쿠키 또는 유사한 식별자를 사용해 방문 기록, 브라우저·기기 정보, 대략적인 위치, 광고 노출 및 이용 정보를 처리할 수 있습니다.</p>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">Google과 파트너는 사용자의 본 사이트 또는 다른 웹사이트 방문 기록을 바탕으로 광고를 제공할 수 있습니다. 사용자는 <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 광고 설정</a>에서 맞춤 광고를 관리하거나 사용 중지할 수 있으며, 브라우저 설정에서 쿠키를 삭제하거나 차단할 수 있습니다.</p>
-                <h3 style="color:#fff; margin:16px 0 8px;">외부 링크</h3>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px;">뉴스, YouTube, GitHub 등 외부 사이트에는 해당 사업자의 개인정보처리방침이 적용됩니다. 자세한 내용은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:#9adfff;">Google 개인정보처리방침</a>을 확인해 주세요.</p>
-                <p style="font-size: 0.8rem; color:#888; margin-top:15px;">최종 업데이트: 2026년 7월 11일</p>
-                <button id="btn-close-privacy" class="btn primary" style="width: 100%; margin-top: 20px;">닫기</button>
-            </div>
-        </div>
+            <section id="stage-2" class="stage">
+                <h1 class="title">번호 선택</h1>
+                <p class="subtitle">섞인 1~45 번호에서 원하는 방식을 선택하세요.</p>
+
+                <div class="selection-mode-tabs" role="tablist" aria-label="번호 생성 방식">
+                    <button id="btn-mode-manual" class="mode-tab active" type="button" role="tab" aria-selected="true" aria-controls="manual-selection-panel">수동 선택</button>
+                    <button id="btn-mode-auto" class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="auto-selection-panel">자동 5게임</button>
+                </div>
+
+                <div id="manual-selection-panel" class="selection-panel active" role="tabpanel" aria-labelledby="btn-mode-manual">
+                    <div class="manual-view-toggle">
+                        <button id="btn-view-blind" class="view-toggle active" type="button">직관 모드 · 숫자 숨김</button>
+                        <button id="btn-view-number" class="view-toggle" type="button">번호 모드 · 숫자 표시</button>
+                    </div>
+                    <div class="number-page-guide">
+                        <button id="btn-page-prev" class="page-nav-btn" type="button" aria-label="이전 번호 페이지">‹</button>
+                        <span id="number-page-indicator">1 / 3</span>
+                        <button id="btn-page-next" class="page-nav-btn" type="button" aria-label="다음 번호 페이지">›</button>
+                    </div>
+                    <div id="orb-field" class="blind-view" aria-label="1부터 45까지 번호 선택"></div>
+                    <div class="selection-slots" aria-label="선택한 6개 번호">
+                        <div class="slot" data-index="0"></div><div class="slot" data-index="1"></div><div class="slot" data-index="2"></div>
+                        <div class="slot" data-index="3"></div><div class="slot" data-index="4"></div><div class="slot" data-index="5"></div>
+                    </div>
+                </div>
+
+                <div id="auto-selection-panel" class="selection-panel" role="tabpanel" aria-labelledby="btn-mode-auto">
+                    <p class="auto-description">처음 생성된 초기값을 바탕으로 5게임을 만듭니다.</p>
+                    <div id="auto-games"></div>
+                    <div class="auto-actions">
+                        <button id="btn-auto-regenerate" class="btn secondary" type="button">5게임 다시 생성</button>
+                        <button id="btn-auto-copy" class="btn primary" type="button">전체 복사</button>
+                        <button id="btn-auto-compare" class="btn compare-btn" type="button">1232회와 비교</button>
+                    </div>
+                </div>
+                <p class="lotto-disclaimer">본 서비스는 오락용 무작위 번호 생성기이며 당첨을 보장하지 않습니다.</p>
+            </section>
+
+            <section id="stage-3" class="stage">
+                <h1 class="title glow-text-intense">생성된 로또 번호</h1>
+                <p class="subtitle" id="result-message">오락용 무작위 번호 생성이 완료됐습니다.</p>
+                <div class="result-container" id="result-numbers"></div>
+                <div class="action-buttons">
+                    <button id="btn-copy" class="btn primary" type="button">번호 복사하기</button>
+                    <button id="btn-retry" class="btn secondary" type="button">처음으로</button>
+                </div>
+                <p class="result-caution">생성 번호는 오락용이며 당첨을 예측하거나 보장하지 않습니다.</p>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <nav aria-label="하단 메뉴">
+                <a href="guide.html">이용안내</a>
+                <a href="privacy.html">개인정보처리방침</a>
+                <a href="https://github.com/Vokim2503" target="_blank" rel="noopener noreferrer">문의·오류 제보</a>
+            </nav>
+            <p>© 2026 행복칠TV 이슈 로또</p>
+        </footer>
     </div>
-    
-    <script>
-        document.getElementById('btn-privacy').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('privacy-modal').style.display = 'flex';
-        });
-        document.getElementById('btn-close-privacy').addEventListener('click', () => {
-            document.getElementById('privacy-modal').style.display = 'none';
-        });
-    </script>
-    <!-- QR 판독 라이브러리는 기능 재공개 전까지 공개판에서 불러오지 않음. -->
-    <script src="main.js?v=34"></script>
+
+    <script src="main.js?v=35"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then(registration => {
+          navigator.serviceWorker.register('/sw.js').then(() => {
             console.log('ServiceWorker registration successful');
           }, err => {
             console.log('ServiceWorker registration failed: ', err);
@@ -266,17 +204,5 @@
         });
       }
     </script>
-    
-    <!-- 철학 앱 크로스 마케팅 플로팅 버튼 -->
-    <!-- 인터넷에 배포된 폴더 구조에 맞게 하위 폴더(./philosophy-V1)를 찾도록 경로 수정 -->
-    <a href="./philosophy-V1/index.html" class="floating-promo-btn" target="_blank">
-        <div class="promo-icon" style="margin-right: 12px; display: flex; align-items: center;">
-            <img src="./philosophy-V1/images/plato.jpg" alt="철학자" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-glow); box-shadow: 0 0 10px rgba(0,255,204,0.5);">
-        </div>
-        <div class="promo-text">
-            <span>인생의 길을 밝혀줄 지혜</span>
-            <strong>위대한 철학자 만나기</strong>
-        </div>
-    </a>
 </body>
 </html>

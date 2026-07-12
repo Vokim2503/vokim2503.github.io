@@ -39,7 +39,6 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    /* 100vh 완전 삭제 (아이폰 화면 떨림의 절대적 원흉) */
     background-color: var(--bg-dark);
     color: var(--text-main);
     font-family: 'Outfit', 'Noto Sans KR', sans-serif;
@@ -51,6 +50,7 @@ html, body {
 #app {
     width: 100%;
     max-width: 600px;
+    min-height: 100vh;
     min-height: 100svh;
     display: flex;
     flex-direction: column;
@@ -58,14 +58,36 @@ html, body {
     margin: 0 auto; /* 중앙 정렬 복원 */
 }
 
+main { width: 100%; }
+
+.site-header {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    gap: 14px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(2,6,23,0.76);
+}
+.site-brand { color: #fff; text-decoration: none; font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
+.site-nav { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.site-nav a { color: #cbd5e1; text-decoration: none; font-size: 0.82rem; }
+.site-nav a:hover, .site-nav a:focus-visible, .site-nav a[aria-current="page"] { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.presented-by { margin-bottom: 1rem; color: var(--primary-glow); font-size: 0.9rem; font-weight: 500; text-align: center; }
+.action-container { width: 100%; margin-top: 2rem; text-align: center; }
+.action-container p { margin-bottom: 1rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+.action-container .btn { width: 100%; padding: 1rem 1.5rem; font-size: 1.05rem; }
+.integrated-terminal { width: 100%; margin-top: 1.5rem; }
+.terminal-intro { margin-bottom: 0.5rem; }
+.integrated-terminal .terminal-container { margin-top: 0; }
+.integrated-terminal #stage1-action { margin-top: 1.5rem; }
+.integrated-terminal #stage1-action .btn { width: 100%; }
+
 .stage {
     display: none; 
     width: 100%; 
+    min-height: 100vh;
     min-height: 100svh;
     flex-direction: column;
     align-items: center;
     justify-content: center; /* 맥에서 상단으로 쏠리는 현상 방지용 중앙 정렬 복구 */
-    padding: 2rem 1rem 120px 1rem;
+    padding: 2rem 1rem 3rem;
     box-sizing: border-box; /* 패딩 포함 크기 계산 (스크롤 넘침 방지) */
 }
 
@@ -358,14 +380,11 @@ html, body {
 @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 .action-buttons { display: flex; gap: 15px; margin-bottom: 2rem; }
-.btn { padding: 12px 24px; border-radius: 30px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, opacity 0.2s; position: relative; z-index: 999; /* 구글 자동광고가 덮는 현상 차단 */ }
+.btn { padding: 12px 24px; border-radius: 30px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, opacity 0.2s; position: relative; z-index: 1; }
 .btn:active { transform: scale(0.95); }
 .btn.primary { background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow)); color: white; }
 .btn.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
 .btn:hover { opacity: 0.9; }
-
-.ad-placeholder { width: 320px; height: 100px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
-.mt-auto { margin-top: auto; margin-bottom: 2rem; }
 
 /* Terminal UI */
 .terminal-container {
@@ -389,82 +408,10 @@ html, body {
     to { opacity: 1; }
 }
 
-/* =========================================
-   철학 상담소 크로스 프로모션 플로팅 버튼
-   ========================================= */
-.floating-promo-btn {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    background: linear-gradient(135deg, #1e1e30, #2a2a40);
-    border: 1px solid var(--primary-glow);
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    color: white;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 255, 204, 0.4);
-    z-index: 9999;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: bouncePromo 2s infinite;
-}
-
-.floating-promo-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 20px var(--primary-glow);
-    animation: none; /* 마우스 오버시 애니메이션 멈춤 */
-}
-
-.promo-icon {
-    font-size: 1.8rem;
-    margin-right: 12px;
-}
-
-.promo-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.promo-text span {
-    font-size: 0.75rem;
-    color: #a4f522; /* 철학 앱의 포인트 컬러 사용 */
-    margin-bottom: 2px;
-}
-
-.promo-text strong {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #fff;
-}
-
-@keyframes bouncePromo {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
 @media (max-width: 600px) {
     .candidate-orb {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-    }
-
-    .floating-promo-btn {
-        bottom: 15px;
-        left: 15px;
-        right: 15px; /* 좌우 여백을 동일하게 주어 모바일 화면 하단에 꽉 차게 만듦 */
-        padding: 10px 15px;
-        justify-content: center; /* 내용 중앙 정렬 */
-    }
-    .promo-icon {
-        font-size: 1.5rem;
-        margin-right: 10px;
-    }
-    .promo-text span {
-        font-size: 0.7rem;
-    }
-    .promo-text strong {
-        font-size: 0.9rem;
     }
 }
 
@@ -486,7 +433,44 @@ html, body {
 }
 .info-card h2 { margin: 0 0 0.6rem; color: #fff; font-size: 1.05rem; }
 .info-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+.info-card h3 { margin: 1rem 0 0.35rem; color: #e2e8f0; font-size: 0.92rem; }
+.info-card ol, .info-card ul { margin: 0.4rem 0 0 1.25rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.75; }
+.info-card .card-link { margin-top: 0.75rem; }
 .info-card a { color: #9adfff; }
+
+.site-footer {
+    width: 100%; padding: 1.4rem 1rem 2rem; border-top: 1px solid rgba(255,255,255,0.1);
+    color: #94a3b8; font-size: 0.78rem; line-height: 1.7; text-align: center;
+}
+.site-footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 0.5rem; }
+.site-footer a { color: #cbd5e1; text-underline-offset: 3px; }
+
+.standalone-page { width: 100%; padding: 2rem 1rem 3rem; }
+.standalone-page article { padding: 1.25rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; background: rgba(0,0,0,0.22); text-align: left; }
+.standalone-page h1 { margin-bottom: 0.75rem; color: #fff; font-size: clamp(1.75rem, 6vw, 2.35rem); line-height: 1.3; }
+.standalone-page .page-lead { margin-bottom: 1.5rem; color: #cbd5e1; line-height: 1.75; }
+.standalone-page h2 { margin: 1.8rem 0 0.6rem; color: #fff; font-size: 1.18rem; }
+.standalone-page h3 { margin: 1.2rem 0 0.4rem; color: #e2e8f0; font-size: 1rem; }
+.standalone-page p, .standalone-page li { color: var(--text-muted); font-size: 0.94rem; line-height: 1.8; }
+.standalone-page ul, .standalone-page ol { margin: 0.5rem 0 0 1.3rem; }
+.standalone-page a { color: #9adfff; }
+.standalone-page .updated { margin-top: 1.5rem; color: #64748b; font-size: 0.8rem; }
+
+@media (max-width: 420px) {
+    .site-header { align-items: flex-start; flex-direction: column; gap: 8px; }
+    .site-nav { width: 100%; justify-content: space-between; }
+    .trend-keyword { font-size: 1.45rem; }
+    .auto-game-label { width: 100%; }
+    .auto-game-balls { gap: 4px; }
+    .auto-ball { width: 32px; height: 32px; font-size: 0.78rem; }
+    .selection-slots { gap: 6px; }
+    .slot { width: 40px; height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html, body { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 
 
 /* 최신 당첨번호 및 자동 5게임 비교 */
@@ -506,32 +490,3 @@ html, body {
 .auto-game-result.prize { color:#00ffcc; font-weight:700; } .auto-game-result.no-prize { color:#999; }
 .compare-btn { background:rgba(0,255,204,.13); color:#b9fff1; border:1px solid rgba(0,255,204,.35); }
 .auto-actions { flex-wrap:wrap; justify-content:center; }
-
-
-/* QR 당첨 확인 */
-.qr-check-card { width:100%; display:flex; justify-content:space-between; align-items:center; gap:14px; margin:0 0 1.5rem; padding:1.1rem; border:1px solid rgba(0,255,204,.25); border-radius:16px; background:rgba(0,255,204,.07); text-align:left; }
-.qr-check-card h2 { margin:5px 0; color:#fff; font-size:1.08rem; } .qr-check-card p { margin:0; color:var(--text-muted); font-size:.8rem; line-height:1.5; }
-.qr-check-card .btn { flex:0 0 auto; padding:10px 14px; }
-.qr-modal { display:none; position:fixed; inset:0; z-index:10000; padding:18px; background:rgba(0,0,0,.86); align-items:center; justify-content:center; }
-.qr-modal-content { width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:18px; border:1px solid var(--primary-glow); border-radius:14px; background:#1e1e24; }
-.qr-modal-content h2 { color:#fff; margin:0 0 10px; } .qr-permission-guide { color:#bbb; font-size:.85rem; line-height:1.6; margin-bottom:12px; }
-#qr-reader { display:none; width:100%; margin-top:12px; background:#111; border-radius:10px; overflow:hidden; color:#222; } #qr-reader video { width:100% !important; border-radius:10px; }
-.qr-source-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.qr-source-actions .btn { padding:12px 8px; font-size:.9rem; white-space:nowrap; }
-.qr-file-label { display:flex; align-items:center; justify-content:center; cursor:pointer; }
-.qr-status { min-height:28px; padding:10px 0; color:#00ffcc; font-size:.85rem; line-height:1.5; text-align:center; }
-.qr-status.error { color:#ffb4b4; }
-.qr-ticket-result { display:none; margin:4px 0 12px; padding:12px; border:1px solid rgba(0,255,204,.28); border-radius:12px; background:rgba(0,0,0,.28); }
-.qr-ticket-heading { margin-bottom:10px; color:#fff; font-weight:700; text-align:center; }
-.qr-ticket-game { display:grid; grid-template-columns:22px 1fr 62px; align-items:center; gap:7px; padding:7px 0; border-top:1px solid rgba(255,255,255,.08); }
-.qr-ticket-label { color:#aaa; font-weight:700; }
-.qr-ticket-balls { display:flex; justify-content:space-between; gap:3px; }
-.qr-ticket-ball { position:relative; width:31px; height:31px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#555; color:#fff; font-size:.78rem; font-weight:700; }
-.qr-ticket-ball.matched { background:#00a884; box-shadow:0 0 0 3px #8affdf, 0 0 12px rgba(0,255,204,.7); }
-.qr-ticket-ball.matched::after { content:'✓'; position:absolute; top:-8px; right:-5px; width:16px; height:16px; border-radius:50%; background:#fff; color:#008f73; font-size:11px; line-height:16px; text-align:center; }
-.qr-ticket-ball.bonus-matched { background:#7c3aed; box-shadow:0 0 0 3px #c4b5fd; }
-.qr-ticket-game-result { color:#aaa; font-size:.7rem; text-align:right; }
-.qr-ticket-game-result.prize { color:#00ffcc; font-weight:700; }
-.qr-ticket-guide { margin:10px 0 0; color:#aaa; font-size:.72rem; line-height:1.5; text-align:center; }
-@media (max-width:380px) { .qr-ticket-ball { width:27px; height:27px; font-size:.7rem; } .qr-ticket-game { grid-template-columns:18px 1fr 55px; gap:4px; } }
-@media (max-width:480px) { .qr-check-card { flex-direction:column; align-items:stretch; } .qr-check-card .btn { width:100%; } }

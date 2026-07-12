@@ -1,68 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    let currentTheme = 'nothing'; // 기본 테마
     let userSeedData = []; // 시드 생성을 위한 데이터
-    let energy = 0;
     
-    // 실시간 뉴스 기사 가져오기 (대구매일신문 RSS)
-    let currentTrend = "오늘의 긍정적인 파동"; // 뉴스가 늦거나 실패해도 즉시 사용할 기본값
-    let newsLink = "#";
-    const newsRSSUrl = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.imaeil.com%2Frss";
+    // 심사 중에는 외부 콘텐츠를 자동 노출하지 않고 운영자가 확인한 중립적 주제를 사용한다.
+    const currentTrend = "오늘의 작은 발견";
 
     const keywordEl = document.getElementById('live-trend-keyword');
     if (keywordEl) keywordEl.textContent = currentTrend;
 
-    function showNewsTrend(title, link) {
-        if (!keywordEl || !title || !link) return;
-        currentTrend = title;
-        newsLink = link;
-        const anchor = document.createElement('a');
-        anchor.href = newsLink;
-        anchor.target = '_blank';
-        anchor.rel = 'noopener noreferrer';
-        anchor.style.cssText = 'color:#fff; text-decoration:underline; text-decoration-color:var(--primary-glow); text-underline-offset:4px;';
-        anchor.textContent = `“${currentTrend}”`;
-        keywordEl.replaceChildren(anchor);
+    function hashText(text) {
+        let hash = 2166136261;
+        for (const character of text) {
+            hash ^= character.codePointAt(0);
+            hash = Math.imul(hash, 16777619);
+        }
+        return hash >>> 0;
     }
 
-    // 외부 뉴스 API가 느리거나 아이폰에서 차단돼도 앱 전체는 기본 문구로 즉시 작동한다.
-    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    const timeoutId = controller ? setTimeout(() => controller.abort(), 5000) : null;
-    const fetchOptions = controller ? { signal: controller.signal } : {};
-
-    fetch(newsRSSUrl, fetchOptions)
-        .then(res => {
-            if (!res.ok) throw new Error(`뉴스 응답 오류: ${res.status}`);
-            return res.json();
-        })
-        .then(data => {
-            if(data && data.items && data.items.length > 0) {
-                // 특정 키워드(정치인 등)가 포함된 기사를 제외하는 필터링 로직
-                const forbiddenKeywords = ['윤석열', '대통령', '김건희', '한동훈', '이재명', '정부', '여당', '야당'];
-                
-                const filteredItems = data.items.filter(item => {
-                    const title = item.title || "";
-                    // 제목에 금지어가 하나라도 포함되어 있으면 제외
-                    return !forbiddenKeywords.some(keyword => title.includes(keyword));
-                });
-
-                // 필터링된 기사가 없으면 원본 데이터라도 사용하되, 가급적 필터링된 목록에서 선택
-                const validItems = filteredItems.length > 0 ? filteredItems : data.items;
-
-                // 상위 5개(또는 필터링된 전체) 기사 중 하나를 무작위로 선택하여 노출
-                const maxIndex = Math.min(5, validItems.length);
-                const randomIndex = Math.floor(Math.random() * maxIndex);
-                const newsItem = validItems[randomIndex];
-                showNewsTrend(newsItem.title, newsItem.link);
+    async function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return;
+            } catch (error) {
+                // 일부 아이폰 브라우저에서는 권한 문제로 실패할 수 있어 아래 방식을 시도한다.
             }
-        })
-        .catch(err => {
-            console.log("뉴스 로딩 실패 또는 지연", err);
-            // 기본 문구를 이미 표시했으므로 앱 사용을 막지 않는다.
-        })
-        .finally(() => {
-            if (timeoutId) clearTimeout(timeoutId);
-        });
+        }
+
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        textArea.setSelectionRange(0, text.length);
+        const copied = document.execCommand('copy');
+        textArea.remove();
+        if (!copied) throw new Error('clipboard-copy-failed');
+    }
 
     // --- 0단계: 메인 버튼 클릭 ---
     const btnStartCalc = document.getElementById('btn-start-calc');
@@ -122,14 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (actionBtn) actionBtn.style.display = 'none';
 
-        // 1. 이슈 데이터 표시
+        // 1. 주제 데이터 표시
         setTimeout(() => {
-            titleEl.innerText = `선택된 이슈: [${currentTrend}]`;
+            titleEl.innerText = `선택된 주제: [${currentTrend}]`;
             titleEl.style.opacity = '1';
         }, 800);
 
         setTimeout(() => {
-            lengthEl.innerText = `기사 문자 길이 값 추출: ${currentTrend.length} bytes`;
+            lengthEl.innerText = `주제 문자 정보 확인: ${[...currentTrend].length}자`;
             lengthEl.style.opacity = '1';
         }, 1600);
 
@@ -154,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 4. 결과 출력
         setTimeout(() => {
-            const finalSeed = clickTimeMs * currentTrend.length;
+            const finalSeed = (clickTimeMs % 1000000000) + hashText(currentTrend);
             userSeedData = [finalSeed]; // 저장
             
             finalSeedEl.innerText = `=> 고유 난수(Seed): ${finalSeed} 생성 완료!`;
@@ -280,6 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const isManual = mode === 'manual';
         btnModeManual?.classList.toggle('active', isManual);
         btnModeAuto?.classList.toggle('active', !isManual);
+        btnModeManual?.setAttribute('aria-selected', String(isManual));
+        btnModeAuto?.setAttribute('aria-selected', String(!isManual));
         manualPanel?.classList.toggle('active', isManual);
         autoPanel?.classList.toggle('active', !isManual);
         if (!isManual && currentAutoGames.length === 0) generateAutoGames();
@@ -373,13 +351,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    btnAutoCopy?.addEventListener('click', () => {
+    btnAutoCopy?.addEventListener('click', async () => {
         const text = currentAutoGames.map((game, index) => `${index + 1}게임: ${game.join(', ')}`).join('\n');
-        navigator.clipboard.writeText(text).then(() => {
+        try {
+            await copyToClipboard(text);
             const originalText = btnAutoCopy.textContent;
             btnAutoCopy.textContent = '복사 완료!';
             setTimeout(() => { btnAutoCopy.textContent = originalText; }, 2000);
-        });
+        } catch (error) {
+            alert('번호를 복사하지 못했습니다. 번호를 길게 눌러 직접 복사해 주세요.');
+        }
     });
 
     let swipeStartX = 0;
@@ -391,321 +372,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Math.abs(distance) > 50) updateNumberPage(currentNumberPage + (distance < 0 ? 1 : -1));
     }, { passive: true });
 
-
-    // --- 동행복권 공식 QR 확인 ---
-    const btnOpenQr = document.getElementById('btn-open-qr');
-    const btnCloseQr = document.getElementById('btn-close-qr');
-    const btnQrCamera = document.getElementById('btn-qr-camera');
-    const qrCameraInput = document.getElementById('qr-camera-input');
-    const qrFileInput = document.getElementById('qr-file-input');
-    const qrModal = document.getElementById('qr-modal');
-    const qrReader = document.getElementById('qr-reader');
-    const qrStatus = document.getElementById('qr-status');
-    const qrTicketResult = document.getElementById('qr-ticket-result');
-    const btnOpenQrResult = document.getElementById('btn-open-qr-result');
-    let qrScanner = null;
-    let qrCameraRunning = false;
-    let verifiedQrUrl = '';
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-    function isOfficialLottoQr(text) {
-        try {
-            const url = new URL(text);
-            const allowedHosts = ['qr.dhlottery.co.kr', 'www.dhlottery.co.kr', 'm.dhlottery.co.kr', 'dhlottery.co.kr'];
-            if (!['http:', 'https:'].includes(url.protocol) || !allowedHosts.includes(url.hostname)) return '';
-            // 예전 복권의 http QR도 공식 https 주소로 안전하게 전환한다.
-            url.protocol = 'https:';
-            return url.href;
-        } catch (error) {
-            return '';
-        }
-    }
-
-    function setQrStatus(message, isError = false) {
-        qrStatus.textContent = message;
-        qrStatus.classList.toggle('error', isError);
-    }
-
-    function parseLottoTicketQr(qrText) {
-        try {
-            const url = new URL(qrText);
-            const rawValue = url.searchParams.get('v') || '';
-            const match = rawValue.match(/^(\d{3,4})([a-zA-Z])(.*)$/);
-            if (!match) return null;
-
-            const round = Number(match[1]);
-            const delimiter = match[2];
-            const gameParts = match[3].split(delimiter);
-            const games = [];
-
-            for (const part of gameParts) {
-                const digits = part.replace(/\D/g, '');
-                if (digits.length < 12) continue;
-                const numbers = [];
-                for (let index = 0; index < 12; index += 2) {
-                    numbers.push(Number(digits.slice(index, index + 2)));
-                }
-                const validNumbers = numbers.length === 6 &&
-                    new Set(numbers).size === 6 &&
-                    numbers.every(number => number >= 1 && number <= 45);
-                if (validNumbers) games.push(numbers.sort((a, b) => a - b));
-                if (games.length === 5) break;
-            }
-
-            return games.length ? { round, games } : null;
-        } catch (error) {
-            return null;
-        }
-    }
-
-    function getGamePrize(numbers, winningResult) {
-        const matches = numbers.filter(number => winningResult.numbers.includes(number)).length;
-        const hasBonus = numbers.includes(winningResult.bonus);
-        if (matches === 6) return { matches, hasBonus, label: '1등' };
-        if (matches === 5 && hasBonus) return { matches, hasBonus, label: '2등' };
-        if (matches === 5) return { matches, hasBonus, label: '3등' };
-        if (matches === 4) return { matches, hasBonus, label: '4등' };
-        if (matches === 3) return { matches, hasBonus, label: '5등' };
-        return { matches, hasBonus, label: `${matches}개 일치` };
-    }
-
-    function renderScannedTicket(ticket) {
-        qrTicketResult.innerHTML = '';
-        qrTicketResult.style.display = 'block';
-
-        const heading = document.createElement('div');
-        heading.className = 'qr-ticket-heading';
-        heading.textContent = `제${ticket.round}회 복권 번호`;
-        qrTicketResult.appendChild(heading);
-
-        const canCompare = ticket.round === latestLottoResult.round;
-        ticket.games.forEach((numbers, gameIndex) => {
-            const row = document.createElement('div');
-            row.className = 'qr-ticket-game';
-
-            const label = document.createElement('span');
-            label.className = 'qr-ticket-label';
-            label.textContent = String.fromCharCode(65 + gameIndex);
-            row.appendChild(label);
-
-            const balls = document.createElement('div');
-            balls.className = 'qr-ticket-balls';
-            numbers.forEach(number => {
-                const ball = document.createElement('span');
-                ball.className = 'qr-ticket-ball';
-                ball.textContent = number;
-                if (canCompare && latestLottoResult.numbers.includes(number)) {
-                    ball.classList.add('matched');
-                    ball.setAttribute('aria-label', `${number}번 당첨번호 일치`);
-                } else if (canCompare && number === latestLottoResult.bonus) {
-                    ball.classList.add('bonus-matched');
-                    ball.setAttribute('aria-label', `${number}번 보너스번호 일치`);
-                }
-                balls.appendChild(ball);
-            });
-            row.appendChild(balls);
-
-            const result = document.createElement('span');
-            result.className = 'qr-ticket-game-result';
-            if (canCompare) {
-                const prize = getGamePrize(numbers, latestLottoResult);
-                result.textContent = prize.label;
-                if (prize.matches >= 3) result.classList.add('prize');
-            } else {
-                result.textContent = '번호 확인';
-            }
-            row.appendChild(result);
-            qrTicketResult.appendChild(row);
-        });
-
-        const guide = document.createElement('p');
-        guide.className = 'qr-ticket-guide';
-        guide.textContent = canCompare
-            ? '✓ 표시된 공은 당첨번호와 일치합니다. 보라색 공은 보너스번호입니다.'
-            : `현재 앱은 제${latestLottoResult.round}회 당첨번호 비교를 지원합니다. 제${ticket.round}회 결과는 아래 공식 결과에서 확인하세요.`;
-        qrTicketResult.appendChild(guide);
-    }
-
-    async function stopQrScanner() {
-        if (!qrScanner) return;
-        try {
-            if (qrCameraRunning) await qrScanner.stop();
-        } catch (error) {}
-        try {
-            await Promise.resolve(qrScanner.clear());
-        } catch (error) {}
-        qrScanner = null;
-        qrCameraRunning = false;
-        qrReader.style.display = 'none';
-        btnQrCamera.textContent = '카메라로 확인';
-        btnQrCamera.disabled = false;
-    }
-
-    async function closeQrScanner() {
-        qrModal.style.display = 'none';
-        await stopQrScanner();
-    }
-
-    function prepareQrScanner() {
-        if (typeof Html5Qrcode === 'undefined') {
-            setQrStatus('QR 판독 도구를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.', true);
-            return false;
-        }
-        if (!qrScanner) qrScanner = new Html5Qrcode('qr-reader');
-        return true;
-    }
-
-    async function handleDecodedQr(decodedText) {
-        const officialUrl = isOfficialLottoQr(decodedText);
-        if (!officialUrl) {
-            setQrStatus('동행복권 로또 QR이 아닙니다. 복권의 QR 부분이 선명하게 보이도록 다시 시도해 주세요.', true);
-            return;
-        }
-        verifiedQrUrl = officialUrl;
-        const ticket = parseLottoTicketQr(decodedText);
-        if (ticket) {
-            renderScannedTicket(ticket);
-            setQrStatus('복권 번호를 읽었습니다. 표시된 일치 번호를 확인해 주세요.');
-        } else {
-            qrTicketResult.style.display = 'none';
-            setQrStatus('공식 QR은 확인했지만 번호 형식을 읽지 못했습니다. 아래 공식 결과를 이용해 주세요.', true);
-        }
-        btnOpenQrResult.style.display = 'block';
-        await stopQrScanner();
-    }
-
-    function cameraErrorMessage(error) {
-        const message = String(error || '');
-        if (/NotAllowed|Permission|denied/i.test(message)) return '카메라 권한이 꺼져 있습니다. 브라우저 설정에서 카메라를 허용하거나 사진으로 확인해 주세요.';
-        if (/NotFound|DevicesNotFound|camera not found/i.test(message)) return '사용할 수 있는 카메라를 찾지 못했습니다. 사진으로 확인해 주세요.';
-        if (/NotReadable|TrackStart|Could not start/i.test(message)) return '다른 앱이 카메라를 사용 중입니다. 다른 앱을 닫고 다시 시도해 주세요.';
-        return '카메라를 시작하지 못했습니다. 사진으로 확인하거나 카메라 권한을 확인해 주세요.';
-    }
-
-    btnOpenQr?.addEventListener('click', () => {
-        qrModal.style.display = 'flex';
-        setQrStatus('카메라 또는 저장된 복권 사진을 선택해 주세요.');
-        btnOpenQrResult.style.display = 'none';
-        qrTicketResult.style.display = 'none';
-        qrTicketResult.innerHTML = '';
-        verifiedQrUrl = '';
-        qrReader.style.display = 'none';
-    });
-
-    btnQrCamera?.addEventListener('click', async () => {
-        // iPhone에서는 실시간 영상 권한이 불안정할 수 있어 기본 후면 카메라로 촬영 후 판독한다.
-        if (isIOSDevice) {
-            setQrStatus('아이폰 카메라가 열리면 복권의 QR 부분을 선명하게 촬영해 주세요.');
-            qrCameraInput?.click();
-            return;
-        }
-
-        if (!prepareQrScanner()) return;
-        btnQrCamera.disabled = true;
-        btnQrCamera.textContent = '카메라 여는 중…';
-        qrReader.style.display = 'block';
-        setQrStatus('카메라 권한 요청이 나오면 허용을 눌러 주세요.');
-        try {
-            await qrScanner.start(
-                { facingMode: 'environment' },
-                { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
-                handleDecodedQr,
-                () => {}
-            );
-            qrCameraRunning = true;
-            btnQrCamera.textContent = '카메라 사용 중';
-            setQrStatus('복권의 정사각형 QR을 화면 중앙 네모 안에 맞춰 주세요.');
-        } catch (error) {
-            setQrStatus(cameraErrorMessage(error), true);
-            await stopQrScanner();
-        }
-    });
-
-    async function createQrScanVariants(file) {
-        const variants = [file];
-        if (typeof createImageBitmap !== 'function') return variants;
-
-        try {
-            const bitmap = await createImageBitmap(file);
-            const crops = [
-                { x: 0, y: 0, w: 1, h: 1 },
-                { x: 0.1, y: 0.1, w: 0.8, h: 0.8 },
-                { x: 0.2, y: 0.2, w: 0.6, h: 0.6 },
-                { x: 0, y: 0, w: 0.7, h: 0.7 },
-                { x: 0.3, y: 0, w: 0.7, h: 0.7 },
-                { x: 0, y: 0.3, w: 0.7, h: 0.7 },
-                { x: 0.3, y: 0.3, w: 0.7, h: 0.7 }
-            ];
-
-            for (let index = 0; index < crops.length; index++) {
-                const crop = crops[index];
-                const sx = Math.round(bitmap.width * crop.x);
-                const sy = Math.round(bitmap.height * crop.y);
-                const sw = Math.round(bitmap.width * crop.w);
-                const sh = Math.round(bitmap.height * crop.h);
-                const scale = Math.min(1, 1400 / Math.max(sw, sh));
-                const canvas = document.createElement('canvas');
-                canvas.width = Math.max(1, Math.round(sw * scale));
-                canvas.height = Math.max(1, Math.round(sh * scale));
-                const context = canvas.getContext('2d', { willReadFrequently: true });
-                context.imageSmoothingEnabled = true;
-                context.imageSmoothingQuality = 'high';
-                context.drawImage(bitmap, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
-                if (blob) variants.push(new File([blob], `qr-area-${index}.jpg`, { type: 'image/jpeg' }));
-            }
-            bitmap.close?.();
-        } catch (error) {
-            console.log('QR 사진 보정 생략', error);
-        }
-        return variants;
-    }
-
-    async function scanQrImageFile(file, inputElement) {
-        if (!file) return;
-        await stopQrScanner();
-        if (!prepareQrScanner()) return;
-        qrReader.style.display = 'block';
-        setQrStatus('사진을 보정하고 QR을 찾는 중입니다…');
-        try {
-            const variants = await createQrScanVariants(file);
-            let decodedText = '';
-            for (let index = 0; index < variants.length; index++) {
-                setQrStatus(`QR 판독 중입니다… (${index + 1}/${variants.length})`);
-                try {
-                    decodedText = await qrScanner.scanFile(variants[index], index === 0);
-                    if (decodedText) break;
-                } catch (error) {}
-            }
-            if (!decodedText) throw new Error('QR not found');
-            await handleDecodedQr(decodedText);
-        } catch (error) {
-            setQrStatus('QR을 찾지 못했습니다. 복권 전체가 아니라 정사각형 QR이 화면의 절반 이상 보이도록 가까이 촬영해 주세요.', true);
-            await stopQrScanner();
-        } finally {
-            inputElement.value = '';
-        }
-    }
-
-    qrCameraInput?.addEventListener('change', async event => {
-        await scanQrImageFile(event.target.files?.[0], qrCameraInput);
-    });
-
-    qrFileInput?.addEventListener('change', async event => {
-        const file = event.target.files?.[0];
-        await scanQrImageFile(file, qrFileInput);
-    });
-
-    btnCloseQr?.addEventListener('click', closeQrScanner);
-    btnOpenQrResult?.addEventListener('click', () => {
-        if (!verifiedQrUrl) {
-            setQrStatus('먼저 복권 QR을 카메라 또는 사진으로 확인해 주세요.', true);
-            return;
-        }
-        // 아이폰과 홈 화면 앱에서 새 창이 차단되지 않도록 현재 화면에서 공식 결과를 연다.
-        window.location.assign(verifiedQrUrl);
-    });
 
     let lastClickTime = 0;
     function handleOrbClick(orbData) {
@@ -729,19 +395,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 3단계: 결과 로직 ---
-    // --- 3단계: 결과 로직 ---
     function initStage3() {
         const resultContainer = document.getElementById('result-numbers');
         resultContainer.innerHTML = '';
         
         const sortedNumbers = [...selectedNumbers].sort((a, b) => a - b);
         
-        // 종교/테마별로 마무리 멘트를 다르게 줄 수 있습니다.
         const resultMsg = document.getElementById('result-message');
-        if(currentTheme === 'bible') resultMsg.textContent = "기도와 함께하는 행운의 번호입니다.";
-        else if(currentTheme === 'buddha') resultMsg.textContent = "마음을 비운 자에게 찾아온 행운의 번호입니다.";
-        else if(currentTheme === 'tarot') resultMsg.textContent = "운명의 카드가 계시한 당신의 번호입니다.";
-        else resultMsg.textContent = "우주의 기운이 담긴 당신의 로또 번호입니다.";
+        resultMsg.textContent = "오락용 무작위 번호 생성이 완료됐습니다.";
 
         sortedNumbers.forEach((num, index) => {
             const orb = document.createElement('div');
@@ -759,42 +420,40 @@ document.addEventListener('DOMContentLoaded', () => {
             resultContainer.appendChild(orb);
         });
 
-        // 🚀 자동화: 행복칠TV(UCeDsZt5n75Wh4UXuVl9wICg) 최신 영상 가져오기
-        const ytContainer = document.getElementById('youtube-promo-container');
-        const channelRSS = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.youtube.com%2Ffeeds%2Fvideos.xml%3Fchannel_id%3DUCeDsZt5n75Wh4UXuVl9wICg";
-        
-        fetch(channelRSS)
-            .then(res => res.json())
-            .then(data => {
-                if(data && data.items && data.items.length > 0) {
-                    const latestVideo = data.items[0]; // 가장 최신 영상
-                    document.getElementById('yt-thumb').src = latestVideo.thumbnail;
-                    document.getElementById('yt-title').innerText = latestVideo.title;
-                    
-                    ytContainer.style.display = 'block';
-                    ytContainer.onclick = () => {
-                        window.open(latestVideo.link, '_blank');
-                    };
-                }
-            })
-            .catch(err => console.log("유튜브 로딩 실패", err));
     }
 
     document.getElementById('btn-retry').addEventListener('click', () => {
-        // 완전 초기화 후 0단계(테마선택)로
+        // 완전 초기화 후 첫 화면으로 돌아간다.
         document.body.className = 'theme-default';
+        userSeedData = [];
+        selectedNumbers = [];
+        currentAutoGames = [];
+        autoAnimationTimers.forEach(timer => clearTimeout(timer));
+        autoAnimationTimers = [];
+
+        btnStartCalc.disabled = false;
+        btnStartCalc.textContent = '이 주제 데이터로 난수 생성하기';
+        btnStartCalc.style.opacity = '';
+
+        const terminal = document.getElementById('integrated-terminal');
+        terminal.style.display = 'none';
+        document.getElementById('stage1-action').style.display = 'none';
         goToStage(0);
+        window.scrollTo(0, 0);
     });
 
-    document.getElementById('btn-copy').addEventListener('click', () => {
+    document.getElementById('btn-copy').addEventListener('click', async () => {
         const sortedNumbers = [...selectedNumbers].sort((a, b) => a - b);
-        const text = `나의 [${currentTheme}] 성향 로또 번호: ${sortedNumbers.join(', ')}`;
-        
-        navigator.clipboard.writeText(text).then(() => {
+        const text = `오락용 로또 번호: ${sortedNumbers.join(', ')}`;
+
+        try {
+            await copyToClipboard(text);
             const btn = document.getElementById('btn-copy');
             const originalText = btn.textContent;
             btn.textContent = '복사 완료!';
             setTimeout(() => { btn.textContent = originalText; }, 2000);
-        });
+        } catch (error) {
+            alert('번호를 복사하지 못했습니다. 번호를 길게 눌러 직접 복사해 주세요.');
+        }
     });
 });
