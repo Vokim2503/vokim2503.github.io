@@ -20,16 +20,16 @@
 - 애드센스 심사 중 공개 사이트에서 아이폰 QR 시험 기능을 임시로 숨김
 - QR 시험 코드는 Git 기록에 보존하고 공개 심사판에서 제거
 - GitHub 첫 화면에 두 앱을 구분하는 관리 안내판 추가
-- FirstLott와 Philosophy Roulette의 실행 주소 및 코드 위치 정리
+- FirstLotto와 Philosophy Roulette의 실행 주소 및 코드 위치 정리
 - `philosophy-V1`을 현재 사용 버전으로 표시
 - `philosophy`를 이전 버전으로 표시
-- FirstLott 첫 이슈창이 외부 뉴스 API를 기다리지 않고 즉시 열리도록 수정
+- FirstLotto 첫 이슈창이 외부 뉴스 API를 기다리지 않고 즉시 열리도록 수정
 - 아이폰 캐시가 외부 뉴스·광고 요청을 방해하지 않도록 서비스워커 수정
 - 최신 로또 당첨정보를 제1232회(12, 15, 19, 22, 24, 36 / 보너스 3)로 갱신
 - 예전 `First-Lotto` 저장소와 현재 `vokim2503.github.io` 저장소의 차이를 안내판에 표시
 - `v32`, `v34`는 배포 번호가 아니라 아이폰 캐시 갱신용 내부 버전임을 기록
 
-## 2026-07-11 — FirstLott
+## 2026-07-11 — FirstLotto
 
 - 아이폰에서 흔들리던 번호 선택 화면을 안정적인 페이지 방식으로 변경
 - 1부터 45까지 모든 번호를 3페이지로 확인할 수 있도록 개선
@@ -44,7 +44,7 @@
 
 ## 이전 작업
 
-- FirstLott 기본 번호 생성 기능 제작
+- FirstLotto 기본 번호 생성 기능 제작
 - Philosophy Roulette 제작 및 `philosophy-V1` 폴더에 배포
 - GitHub Pages 공개 주소 연결
 - Google Analytics 및 AdSense 관련 코드 연결
