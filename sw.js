@@ -1,9 +1,10 @@
-const CACHE_NAME = 'lotto-cache-v24'; // 애드센스 심사용 콘텐츠·탐색 안정판
+const CACHE_NAME = 'lotto-cache-v25'; // QR 복원 및 애드센스 심사용 콘텐츠 안정판
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
   './main.js',
+  './qr-core.js',
   './manifest.json',
   './guide.html',
   './privacy.html'

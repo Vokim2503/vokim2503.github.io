@@ -34,6 +34,20 @@ test('page contains no manual AdSense ad containers', () => {
   assert.doesNotMatch(indexHtml, /class=["'][^"']*ad-slot/i);
 });
 
+test('QR checker is substantive publisher content and contains no ad placement', () => {
+  const qrCard = indexHtml.match(/<section class="qr-check-card"[\s\S]*?<\/section>/);
+  const qrModal = indexHtml.match(/<div id="qr-modal"[\s\S]*?<\/div>\s*<\/div>/);
+
+  assert.ok(qrCard, 'QR explanation card must be published');
+  assert.match(qrCard[0], /카메라 또는 저장된 사진/);
+  assert.match(qrCard[0], /브라우저 안에서만/);
+  assert.doesNotMatch(qrCard[0], /adsbygoogle|ad-placeholder|ad-slot/i);
+
+  assert.ok(qrModal, 'QR dialog must be published');
+  assert.match(qrModal[0], /동행복권 공식 결과/);
+  assert.doesNotMatch(qrModal[0], /adsbygoogle|ad-placeholder|ad-slot/i);
+});
+
 test('static card and comparison logic use completed round 1234', () => {
   assert.match(indexHtml, /제1234회 당첨번호/);
   assert.match(indexHtml, /2026년 7월 25일 추첨/);

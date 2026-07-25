@@ -365,6 +365,305 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- 동행복권 공식 QR 확인 ---
+    const btnOpenQr = document.getElementById('btn-open-qr');
+    const btnCloseQr = document.getElementById('btn-close-qr');
+    const btnQrCamera = document.getElementById('btn-qr-camera');
+    const qrCameraInput = document.getElementById('qr-camera-input');
+    const qrFileInput = document.getElementById('qr-file-input');
+    const qrModal = document.getElementById('qr-modal');
+    const qrReader = document.getElementById('qr-reader');
+    const qrStatus = document.getElementById('qr-status');
+    const qrTicketResult = document.getElementById('qr-ticket-result');
+    const btnOpenQrResult = document.getElementById('btn-open-qr-result');
+    const qrCore = window.LottoQrCore;
+    let qrScanner = null;
+    let qrCameraRunning = false;
+    let qrLibraryPromise = null;
+    let verifiedQrUrl = '';
+    let qrPreviousFocus = null;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    function setQrStatus(message, isError = false) {
+        if (!qrStatus) return;
+        qrStatus.textContent = message;
+        qrStatus.classList.toggle('error', isError);
+    }
+
+    function loadQrLibrary() {
+        if (typeof window.Html5Qrcode !== 'undefined') return Promise.resolve(window.Html5Qrcode);
+        if (qrLibraryPromise) return qrLibraryPromise;
+
+        qrLibraryPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js';
+            script.crossOrigin = 'anonymous';
+            script.referrerPolicy = 'no-referrer';
+            script.onload = () => {
+                if (typeof window.Html5Qrcode !== 'undefined') resolve(window.Html5Qrcode);
+                else reject(new Error('qr-library-unavailable'));
+            };
+            script.onerror = () => reject(new Error('qr-library-load-failed'));
+            document.head.appendChild(script);
+        }).catch(error => {
+            qrLibraryPromise = null;
+            throw error;
+        });
+
+        return qrLibraryPromise;
+    }
+
+    async function prepareQrScanner() {
+        if (!qrCore) {
+            setQrStatus('QR 확인 기능을 초기화하지 못했습니다. 페이지를 새로고침해 주세요.', true);
+            return false;
+        }
+        try {
+            const Html5QrcodeClass = await loadQrLibrary();
+            if (!qrScanner) qrScanner = new Html5QrcodeClass('qr-reader');
+            return true;
+        } catch (error) {
+            setQrStatus('QR 판독 도구를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.', true);
+            return false;
+        }
+    }
+
+    function renderScannedTicket(ticket) {
+        qrTicketResult.innerHTML = '';
+        qrTicketResult.style.display = 'block';
+
+        const heading = document.createElement('div');
+        heading.className = 'qr-ticket-heading';
+        heading.textContent = `제${ticket.round}회 복권 번호`;
+        qrTicketResult.appendChild(heading);
+
+        const canCompare = ticket.round === latestLottoResult.round;
+        ticket.games.forEach((numbers, gameIndex) => {
+            const row = document.createElement('div');
+            row.className = 'qr-ticket-game';
+
+            const label = document.createElement('span');
+            label.className = 'qr-ticket-label';
+            label.textContent = String.fromCharCode(65 + gameIndex);
+            row.appendChild(label);
+
+            const balls = document.createElement('div');
+            balls.className = 'qr-ticket-balls';
+            numbers.forEach(number => {
+                const ball = document.createElement('span');
+                ball.className = 'qr-ticket-ball';
+                ball.textContent = number;
+                if (canCompare && latestLottoResult.numbers.includes(number)) {
+                    ball.classList.add('matched');
+                    ball.setAttribute('aria-label', `${number}번 당첨번호 일치`);
+                } else if (canCompare && number === latestLottoResult.bonus) {
+                    ball.classList.add('bonus-matched');
+                    ball.setAttribute('aria-label', `${number}번 보너스번호 일치`);
+                }
+                balls.appendChild(ball);
+            });
+            row.appendChild(balls);
+
+            const result = document.createElement('span');
+            result.className = 'qr-ticket-game-result';
+            if (canCompare) {
+                const prize = qrCore.getGamePrize(numbers, latestLottoResult);
+                result.textContent = prize.label;
+                if (prize.matches >= 3) result.classList.add('prize');
+            } else {
+                result.textContent = '번호 확인';
+            }
+            row.appendChild(result);
+            qrTicketResult.appendChild(row);
+        });
+
+        const guide = document.createElement('p');
+        guide.className = 'qr-ticket-guide';
+        guide.textContent = canCompare
+            ? '✓ 표시된 공은 당첨번호와 일치합니다. 보라색 공은 보너스번호입니다.'
+            : `현재 앱은 제${latestLottoResult.round}회 당첨번호 비교를 지원합니다. 제${ticket.round}회 결과는 아래 공식 결과에서 확인하세요.`;
+        qrTicketResult.appendChild(guide);
+    }
+
+    async function stopQrScanner() {
+        if (!qrScanner) return;
+        try {
+            if (qrCameraRunning) await qrScanner.stop();
+        } catch (error) {}
+        try {
+            await Promise.resolve(qrScanner.clear());
+        } catch (error) {}
+        qrScanner = null;
+        qrCameraRunning = false;
+        qrReader.style.display = 'none';
+        btnQrCamera.textContent = '카메라로 확인';
+        btnQrCamera.disabled = false;
+    }
+
+    async function closeQrScanner() {
+        qrModal.style.display = 'none';
+        qrModal.setAttribute('aria-hidden', 'true');
+        await stopQrScanner();
+        qrPreviousFocus?.focus();
+    }
+
+    async function handleDecodedQr(decodedText) {
+        const officialUrl = qrCore.normalizeOfficialQrUrl(decodedText);
+        if (!officialUrl) {
+            setQrStatus('동행복권 로또 QR이 아닙니다. 복권의 QR 부분이 선명하게 보이도록 다시 시도해 주세요.', true);
+            return;
+        }
+
+        verifiedQrUrl = officialUrl;
+        const ticket = qrCore.parseLottoTicketQr(decodedText);
+        if (ticket) {
+            renderScannedTicket(ticket);
+            setQrStatus('복권 번호를 읽었습니다. 표시된 일치 번호를 확인해 주세요.');
+        } else {
+            qrTicketResult.style.display = 'none';
+            setQrStatus('공식 QR은 확인했지만 번호 형식을 읽지 못했습니다. 아래 공식 결과를 이용해 주세요.', true);
+        }
+        btnOpenQrResult.hidden = false;
+        await stopQrScanner();
+    }
+
+    function cameraErrorMessage(error) {
+        const message = String(error || '');
+        if (/NotAllowed|Permission|denied/i.test(message)) return '카메라 권한이 꺼져 있습니다. 브라우저 설정에서 카메라를 허용하거나 사진으로 확인해 주세요.';
+        if (/NotFound|DevicesNotFound|camera not found/i.test(message)) return '사용할 수 있는 카메라를 찾지 못했습니다. 사진으로 확인해 주세요.';
+        if (/NotReadable|TrackStart|Could not start/i.test(message)) return '다른 앱이 카메라를 사용 중입니다. 다른 앱을 닫고 다시 시도해 주세요.';
+        return '카메라를 시작하지 못했습니다. 사진으로 확인하거나 카메라 권한을 확인해 주세요.';
+    }
+
+    btnOpenQr?.addEventListener('click', () => {
+        qrPreviousFocus = document.activeElement;
+        qrModal.style.display = 'flex';
+        qrModal.setAttribute('aria-hidden', 'false');
+        setQrStatus('카메라 또는 저장된 복권 사진을 선택해 주세요.');
+        btnOpenQrResult.hidden = true;
+        qrTicketResult.style.display = 'none';
+        qrTicketResult.innerHTML = '';
+        verifiedQrUrl = '';
+        qrReader.style.display = 'none';
+        btnCloseQr.focus();
+    });
+
+    btnQrCamera?.addEventListener('click', async () => {
+        if (isIOSDevice) {
+            setQrStatus('아이폰 카메라가 열리면 복권의 QR 부분을 선명하게 촬영해 주세요.');
+            qrCameraInput?.click();
+            return;
+        }
+
+        if (!await prepareQrScanner()) return;
+        btnQrCamera.disabled = true;
+        btnQrCamera.textContent = '카메라 여는 중…';
+        qrReader.style.display = 'block';
+        setQrStatus('카메라 권한 요청이 나오면 허용을 눌러 주세요.');
+        try {
+            await qrScanner.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
+                handleDecodedQr,
+                () => {}
+            );
+            qrCameraRunning = true;
+            btnQrCamera.textContent = '카메라 사용 중';
+            setQrStatus('복권의 정사각형 QR을 화면 중앙 네모 안에 맞춰 주세요.');
+        } catch (error) {
+            setQrStatus(cameraErrorMessage(error), true);
+            await stopQrScanner();
+        }
+    });
+
+    async function createQrScanVariants(file) {
+        const variants = [file];
+        if (typeof createImageBitmap !== 'function') return variants;
+
+        try {
+            const bitmap = await createImageBitmap(file);
+            const crops = [
+                { x: 0, y: 0, w: 1, h: 1 },
+                { x: 0.1, y: 0.1, w: 0.8, h: 0.8 },
+                { x: 0.2, y: 0.2, w: 0.6, h: 0.6 },
+                { x: 0, y: 0, w: 0.7, h: 0.7 },
+                { x: 0.3, y: 0, w: 0.7, h: 0.7 },
+                { x: 0, y: 0.3, w: 0.7, h: 0.7 },
+                { x: 0.3, y: 0.3, w: 0.7, h: 0.7 }
+            ];
+
+            for (let index = 0; index < crops.length; index++) {
+                const crop = crops[index];
+                const sx = Math.round(bitmap.width * crop.x);
+                const sy = Math.round(bitmap.height * crop.y);
+                const sw = Math.round(bitmap.width * crop.w);
+                const sh = Math.round(bitmap.height * crop.h);
+                const scale = Math.min(1, 1400 / Math.max(sw, sh));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(sw * scale));
+                canvas.height = Math.max(1, Math.round(sh * scale));
+                const context = canvas.getContext('2d', { willReadFrequently: true });
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
+                context.drawImage(bitmap, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                if (blob) variants.push(new File([blob], `qr-area-${index}.jpg`, { type: 'image/jpeg' }));
+            }
+            bitmap.close?.();
+        } catch (error) {
+            console.log('QR 사진 보정 생략', error);
+        }
+        return variants;
+    }
+
+    async function scanQrImageFile(file, inputElement) {
+        if (!file) return;
+        await stopQrScanner();
+        if (!await prepareQrScanner()) return;
+        qrReader.style.display = 'block';
+        setQrStatus('사진을 보정하고 QR을 찾는 중입니다…');
+        try {
+            const variants = await createQrScanVariants(file);
+            let decodedText = '';
+            for (let index = 0; index < variants.length; index++) {
+                setQrStatus(`QR 판독 중입니다… (${index + 1}/${variants.length})`);
+                try {
+                    decodedText = await qrScanner.scanFile(variants[index], index === 0);
+                    if (decodedText) break;
+                } catch (error) {}
+            }
+            if (!decodedText) throw new Error('qr-not-found');
+            await handleDecodedQr(decodedText);
+        } catch (error) {
+            setQrStatus('QR을 찾지 못했습니다. 정사각형 QR이 화면의 절반 이상 보이도록 가까이 촬영해 주세요.', true);
+            await stopQrScanner();
+        } finally {
+            inputElement.value = '';
+        }
+    }
+
+    qrCameraInput?.addEventListener('change', async event => {
+        await scanQrImageFile(event.target.files?.[0], qrCameraInput);
+    });
+    qrFileInput?.addEventListener('change', async event => {
+        await scanQrImageFile(event.target.files?.[0], qrFileInput);
+    });
+    btnCloseQr?.addEventListener('click', closeQrScanner);
+    qrModal?.addEventListener('click', event => {
+        if (event.target === qrModal) closeQrScanner();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && qrModal?.getAttribute('aria-hidden') === 'false') closeQrScanner();
+    });
+    btnOpenQrResult?.addEventListener('click', () => {
+        if (!verifiedQrUrl) {
+            setQrStatus('먼저 복권 QR을 카메라 또는 사진으로 확인해 주세요.', true);
+            return;
+        }
+        window.location.assign(verifiedQrUrl);
+    });
+
     let swipeStartX = 0;
     orbField.addEventListener('touchstart', event => {
         swipeStartX = event.changedTouches[0].clientX;
