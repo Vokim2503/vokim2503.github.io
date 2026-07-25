@@ -28,7 +28,7 @@
 | 앱 | 설명 | 실행하기 | 코드 위치 |
 |---|---|---|---|
 | 🎱 **FirstLotto** | 오늘의 주제와 시간을 이용한 오락용 로또 번호 생성기 | [FirstLotto 실행](https://vokim2503.github.io/) | [저장소 최상위 파일 보기](https://github.com/Vokim2503/vokim2503.github.io) |
-| 🎡 **Philosophy Roulette** | 철학자를 선택하고 관련 콘텐츠를 보는 앱 | 애드센스 심사 중 메인 탐색에서 임시 분리 | [`philosophy-V1`](./philosophy-V1/) |
+| 🎡 **Philosophy Roulette** | 철학자를 선택하고 관련 콘텐츠를 보는 앱 | [Philosophy Roulette 실행](https://vokim2503.github.io/philosophy-V1/) | [`philosophy-V1`](./philosophy-V1/) |
 
 ## 1. FirstLotto
 
@@ -49,7 +49,7 @@ FirstLotto는 별도 폴더가 아니라 **저장소의 첫 화면에 있는 파
 
 ## 2. Philosophy Roulette
 
-현재 Philosophy Roulette의 소스는 다음 폴더에 보존되어 있습니다. 애드센스 심사 중에는 FirstLotto 탐색과 분리했습니다.
+`philosophy-V1`은 현재 공개 중인 최신 운영 버전입니다. 검색 허용, 애드센스 게시자 코드, 고유 설명 콘텐츠, 이용 안내·개인정보·운영자 링크, 로또 메인 연결과 사이트맵 등록을 완료했습니다. 같은 도메인의 애드센스 상태는 **준비 중 / 리뷰가 요청됨**이며, 승인 결과를 기다리고 있습니다.
 
 ➡️ [`philosophy-V1`](./philosophy-V1/)
 
