@@ -160,6 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (stageNum === 2) initStage2(seed);
         else if (stageNum === 3) initStage3();
+
+        window.scrollTo(0, 0);
     }
 
     // --- 2단계: 1~45 전체 번호를 3페이지로 선택 ---
@@ -177,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAutoRegenerate = document.getElementById('btn-auto-regenerate');
     const btnAutoCopy = document.getElementById('btn-auto-copy');
     const btnAutoCompare = document.getElementById('btn-auto-compare');
-    const latestLottoResult = { round: 1232, date: '2026-07-11', numbers: [12, 15, 19, 22, 24, 36], bonus: 3 };
+    const latestLottoResult = { round: 1234, date: '2026-07-25', numbers: [1, 15, 19, 31, 35, 43], bonus: 27 };
     let selectedNumbers = [];
     let orbs = [];
     let currentNumberPage = 0;

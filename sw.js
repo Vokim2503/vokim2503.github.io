@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lotto-cache-v23'; // 애드센스 심사용 콘텐츠·탐색 안정판
+const CACHE_NAME = 'lotto-cache-v24'; // 애드센스 심사용 콘텐츠·탐색 안정판
 const urlsToCache = [
   './',
   './index.html',
