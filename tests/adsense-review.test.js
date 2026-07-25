@@ -119,4 +119,9 @@ test('philosophy app exposes a prominent home link before its interactive conten
     philosophyHtml.slice(topNav, gallery),
     /<a class="home-return-button" href="\.\.\/">← 이슈 로또로 돌아가기<\/a>/
   );
+  assert.match(
+    philosophyHtml,
+    /<link rel="stylesheet" href="index\.css\?v=e32e74b">/,
+    'the page must request the stylesheet version containing the prominent button styles'
+  );
 });
