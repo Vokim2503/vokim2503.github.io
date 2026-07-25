@@ -606,3 +606,110 @@ select option {
     height: 100%;
     border-radius: 8px;
 }
+
+/* ====================================================
+   검색 가능한 철학 안내 콘텐츠와 운영 정보
+==================================================== */
+.philosophy-content {
+    width: 100%;
+    margin-top: 48px;
+    padding: 34px;
+    box-sizing: border-box;
+    text-align: left;
+    color: #e5e7eb;
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(164, 245, 34, 0.28);
+    border-radius: 20px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+}
+
+.philosophy-content h1,
+.philosophy-content h2 {
+    color: #f8fafc;
+    line-height: 1.35;
+}
+
+.philosophy-content h1 {
+    margin: 6px 0 16px;
+    font-size: clamp(1.65rem, 5vw, 2.3rem);
+}
+
+.philosophy-content h2 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+}
+
+.philosophy-content p,
+.philosophy-content li {
+    line-height: 1.75;
+}
+
+.philosophy-content article,
+.philosophy-notice {
+    margin-top: 22px;
+    padding: 22px;
+    background: rgba(30, 41, 59, 0.72);
+    border-radius: 14px;
+}
+
+.philosophy-content ol {
+    margin: 0;
+    padding-left: 1.35rem;
+}
+
+.content-kicker {
+    margin: 0;
+    color: #a4f522;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.philosophy-notice {
+    border-left: 4px solid #ffb020;
+}
+
+.philosophy-footer {
+    width: min(900px, calc(100% - 32px));
+    margin: 30px auto 20px;
+    padding: 22px;
+    box-sizing: border-box;
+    text-align: center;
+    color: #cbd5e1;
+}
+
+.philosophy-footer nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+}
+
+.philosophy-footer a {
+    color: #d9f99d;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.philosophy-footer a:hover,
+.philosophy-footer a:focus-visible {
+    color: #fff;
+    outline: 2px solid #a4f522;
+    outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+    .philosophy-content {
+        margin-top: 34px;
+        padding: 22px 16px;
+    }
+
+    .philosophy-content article,
+    .philosophy-notice {
+        padding: 18px 14px;
+    }
+
+    .philosophy-footer {
+        width: calc(100% - 20px);
+        padding: 18px 10px;
+    }
+}
