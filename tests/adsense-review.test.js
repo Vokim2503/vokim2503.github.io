@@ -105,3 +105,18 @@ test('root page and sitemap expose the current philosophy app', () => {
     /<loc>https:\/\/vokim2503\.github\.io\/philosophy-V1\/<\/loc>/
   );
 });
+
+test('philosophy app exposes a prominent home link before its interactive content', () => {
+  const mainStart = philosophyHtml.indexOf('<main class="container">');
+  const topNav = philosophyHtml.indexOf('<nav class="philosophy-top-nav"');
+  const gallery = philosophyHtml.indexOf('<div class="philosopher-gallery-3d">');
+  const footer = philosophyHtml.indexOf('<footer class="philosophy-footer">');
+
+  assert.ok(mainStart >= 0, 'philosophy main must exist');
+  assert.ok(topNav > mainStart && topNav < gallery, 'home link must appear before the gallery');
+  assert.ok(footer > topNav, 'footer fallback link must remain after the top link');
+  assert.match(
+    philosophyHtml.slice(topNav, gallery),
+    /<a class="home-return-button" href="\.\.\/">← 이슈 로또로 돌아가기<\/a>/
+  );
+});

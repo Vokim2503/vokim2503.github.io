@@ -610,6 +610,39 @@ select option {
 /* ====================================================
    검색 가능한 철학 안내 콘텐츠와 운영 정보
 ==================================================== */
+.philosophy-top-nav {
+    width: 100%;
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.home-return-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
+    padding: 10px 18px;
+    box-sizing: border-box;
+    color: #eaffc8;
+    background: rgba(15, 23, 42, 0.82);
+    border: 1px solid rgba(164, 245, 34, 0.72);
+    border-radius: 999px;
+    box-shadow: 0 0 16px rgba(164, 245, 34, 0.18);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.home-return-button:hover,
+.home-return-button:focus-visible {
+    color: #fff;
+    background: rgba(56, 76, 30, 0.82);
+    box-shadow: 0 0 22px rgba(164, 245, 34, 0.36);
+    outline: 2px solid #a4f522;
+    outline-offset: 3px;
+    transform: translateY(-1px);
+}
+
 .philosophy-content {
     width: 100%;
     margin-top: 48px;
