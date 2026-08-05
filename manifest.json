@@ -1,6 +1,6 @@
 {
-  "name": "이슈 로또",
-  "short_name": "이슈로또",
+  "name": "이슈 넘버",
+  "short_name": "이슈넘버",
   "description": "오늘의 주제와 클릭 시각을 조합해 1~45 범위의 오락용 무작위 번호를 만듭니다.",
   "start_url": "/?source=pwa",
   "display": "standalone",

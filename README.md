@@ -27,12 +27,14 @@
 
 | 앱 | 설명 | 실행하기 | 코드 위치 |
 |---|---|---|---|
-| 🎱 **FirstLotto** | 오늘의 주제와 시간을 이용한 오락용 로또 번호 생성기 | [FirstLotto 실행](https://vokim2503.github.io/) | [저장소 최상위 파일 보기](https://github.com/Vokim2503/vokim2503.github.io) |
+| 🎱 **FirstLotto (공개명: 이슈 넘버)** | 오늘의 주제와 시간을 이용한 오락용 무작위 번호 생성기 | [이슈 넘버 실행](https://vokim2503.github.io/) | [저장소 최상위 파일 보기](https://github.com/Vokim2503/vokim2503.github.io) |
 | 🎡 **Philosophy Roulette** | 철학자를 선택하고 관련 콘텐츠를 보는 앱 | [Philosophy Roulette 실행](https://vokim2503.github.io/philosophy-V1/) | [`philosophy-V1`](./philosophy-V1/) |
 
-## 1. FirstLotto
+## 1. FirstLotto (공개명: 이슈 넘버)
 
-FirstLotto는 별도 폴더가 아니라 **저장소의 첫 화면에 있는 파일들**로 실행됩니다.
+> 2026-08-06: 3회 연속 애드센스 거부 원인을 "도박 및 게임" 정책 위반으로 재진단하고, 동행복권 브랜드·실제 당첨번호·QR 복권 대조 기능을 전면 제거했습니다. 공개 브랜드명도 "이슈 로또"에서 "이슈 넘버"로 변경했습니다. 자세한 내용은 [`CHANGELOG.md`](./CHANGELOG.md)의 2026-08-06 항목을 확인하세요.
+
+FirstLotto(공개 화면 이름: 이슈 넘버)는 별도 폴더가 아니라 **저장소의 첫 화면에 있는 파일들**로 실행됩니다.
 
 주요 파일:
 
