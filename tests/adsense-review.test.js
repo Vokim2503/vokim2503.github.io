@@ -36,14 +36,30 @@ test('page contains no manual AdSense ad containers', () => {
   assert.doesNotMatch(indexHtml, /class=["'][^"']*ad-slot/i);
 });
 
-test('no lottery-, gambling-, or real-draw-related content remains on the site', () => {
-  assert.doesNotMatch(indexHtml, /로또|복권|당첨|동행복권/);
-  assert.doesNotMatch(mainJs, /로또|복권|당첨|동행복권/);
+test('the public brand name no longer references 로또', () => {
+  assert.doesNotMatch(indexHtml, /이슈 로또/);
+  assert.match(indexHtml, /이슈 넘버/);
 });
 
-test('no QR ticket-scanning feature remains', () => {
-  assert.doesNotMatch(indexHtml, /qr-check-card|qr-modal|btn-open-qr/);
-  assert.doesNotMatch(mainJs, /qrCore|LottoQrCore|qr-modal/);
+test('QR checker is substantive publisher content and contains no ad placement', () => {
+  const qrCard = indexHtml.match(/<section class="qr-check-card"[\s\S]*?<\/section>/);
+  const qrModal = indexHtml.match(/<div id="qr-modal"[\s\S]*?<\/div>\s*<\/div>/);
+
+  assert.ok(qrCard, 'QR explanation card must be published');
+  assert.match(qrCard[0], /카메라 또는 저장된 사진/);
+  assert.match(qrCard[0], /브라우저 안에서만/);
+  assert.doesNotMatch(qrCard[0], /adsbygoogle|ad-placeholder|ad-slot/i);
+
+  assert.ok(qrModal, 'QR dialog must be published');
+  assert.match(qrModal[0], /동행복권 공식 결과/);
+  assert.doesNotMatch(qrModal[0], /adsbygoogle|ad-placeholder|ad-slot/i);
+});
+
+test('QR comparison data uses completed round 1234', () => {
+  assert.match(
+    mainJs,
+    /round:\s*1234,\s*date:\s*'2026-07-25',\s*numbers:\s*\[1, 15, 19, 31, 35, 43\],\s*bonus:\s*27/
+  );
 });
 
 test('legacy and nested philosophy pages remain excluded from indexing', () => {

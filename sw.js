@@ -1,9 +1,10 @@
-const CACHE_NAME = 'lotto-cache-v26'; // 복권 연관 요소 제거 및 애드센스 재심사용 콘텐츠 안정판
+const CACHE_NAME = 'lotto-cache-v27'; // 홈피 서비스용 QR 기능 복원
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
   './main.js',
+  './qr-core.js',
   './manifest.json',
   './guide.html',
   './privacy.html'
