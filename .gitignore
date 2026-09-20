@@ -6,3 +6,6 @@
 # Understand Anything 플러그인 분석 캐시 (재생성 가능, 커밋 대상 아님)
 .ua/
 .understand-anything/
+
+# agentmemory 서버 로컬 상태 저장소 (재생성 가능, 커밋 대상 아님)
+data/
